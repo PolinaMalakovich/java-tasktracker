@@ -1,3 +1,5 @@
+package ru.yandex.malakovich.tasktracker.model;
+
 import java.util.Objects;
 
 public class Subtask extends Task{

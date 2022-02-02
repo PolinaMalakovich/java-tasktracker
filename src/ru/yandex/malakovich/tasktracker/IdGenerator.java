@@ -1,3 +1,5 @@
+package ru.yandex.malakovich.tasktracker;
+
 public class IdGenerator {
     private int lastId;
 

@@ -1,3 +1,10 @@
+package ru.yandex.malakovich.tasktracker.manager;
+
+import ru.yandex.malakovich.tasktracker.model.Epic;
+import ru.yandex.malakovich.tasktracker.model.Status;
+import ru.yandex.malakovich.tasktracker.model.Subtask;
+import ru.yandex.malakovich.tasktracker.model.Task;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
