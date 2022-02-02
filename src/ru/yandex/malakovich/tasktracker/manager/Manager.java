@@ -34,6 +34,7 @@ public class Manager {
 
     public void deleteAllEpics() {
         epics.clear();
+        deleteAllSubtasks();
     }
 
     public void deleteAllTasks() {
@@ -126,6 +127,9 @@ public class Manager {
     }
 
     public void deleteEpicById(Integer id) {
+        for (Integer i : getEpicById(id).getSubtasks()) {
+            deleteSubtaskById(i);
+        }
         epics.remove(id);
     }
 
