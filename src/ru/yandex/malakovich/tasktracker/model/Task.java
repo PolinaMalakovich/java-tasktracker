@@ -53,11 +53,13 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
-                "title='" + title + '\'' +
+        return "Task{" + toStringHelper() + '}';
+    }
+
+    protected String toStringHelper() {
+        return "title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
-                ", id=" + id +
-                '}';
+                ", id=" + id;
     }
 }
