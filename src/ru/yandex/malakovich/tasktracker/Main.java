@@ -17,9 +17,8 @@ public class Main {
         manager.createTask(task1);
         Task task2 = new Task("walk the dog", "woof-woof", idGenerator.getNewId());
         manager.createTask(task2);
-        Epic epic1 = new Epic("prepare for OCA",
+        Epic epic1 = Epic.create("prepare for OCA",
                 "life is hard",
-                Status.NEW,
                 new HashSet<>(),
                 idGenerator.getNewId());
         manager.createEpic(epic1);
@@ -35,9 +34,8 @@ public class Main {
                 epic1.getId(),
                 idGenerator.getNewId());
         manager.createSubtask(subtask2);
-        Epic epic2 = new Epic("get ready for IELTS",
+        Epic epic2 = Epic.create("get ready for IELTS",
                 "let me speak from my heart",
-                Status.NEW,
                 new HashSet<>(),
                 idGenerator.getNewId());
         manager.createEpic(epic2);

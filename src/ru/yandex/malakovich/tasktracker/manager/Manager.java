@@ -91,36 +91,12 @@ public class Manager {
             }
 
             if (oldSubtask.getStatus() != subtask.getStatus()) {
-                Epic e = epics.get(subtask.getEpicId());
-                int statusNew = 0;
-                int statusDone = 0;
+                Epic oldEpic = epics.get(subtask.getEpicId());
 
-                for (Subtask s : getEpicSubtasks(e)) {
-                    switch (s.getStatus()) {
-                        case NEW:
-                            statusNew += 1;
-                            break;
-                        case DONE:
-                            statusDone += 1;
-                            break;
-                    }
-                }
-
-                Status status;
-
-                if (statusNew == e.getSubtasks().size()) {
-                    status = Status.NEW;
-                } else if (statusDone == e.getSubtasks().size()) {
-                    status = Status.DONE;
-                } else {
-                    status = Status.IN_PROGRESS;
-                }
-
-                Epic epic = new Epic(e.getTitle(),
-                        e.getDescription(),
-                        status,
-                        e.getSubtasks(),
-                        e.getId());
+                Epic epic = Epic.create(oldEpic.getTitle(),
+                        oldEpic.getDescription(),
+                        getEpicSubtasks(oldEpic),
+                        oldEpic.getId());
                 epics.replace(epic.getId(), epic);
             }
         }
