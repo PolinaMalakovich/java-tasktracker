@@ -61,7 +61,7 @@ public class Main {
 
         manager.deleteEpicById(epic2.getId());
         manager.deleteTaskById(task2.getId());
-        manager.deleteSubtaskById(subtask2.getId());
+        manager.deleteSubtaskById(subtask1.getId());
 
         System.out.println(manager.getEpics());
         System.out.println(manager.getTasks());

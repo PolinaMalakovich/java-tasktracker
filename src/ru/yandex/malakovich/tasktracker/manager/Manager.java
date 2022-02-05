@@ -1,7 +1,6 @@
 package ru.yandex.malakovich.tasktracker.manager;
 
 import ru.yandex.malakovich.tasktracker.model.Epic;
-import ru.yandex.malakovich.tasktracker.model.Status;
 import ru.yandex.malakovich.tasktracker.model.Subtask;
 import ru.yandex.malakovich.tasktracker.model.Task;
 
@@ -9,7 +8,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import static java.util.Objects.requireNonNull;
+
 public class Manager {
+    public static final String EPIC_CANNOT_BE_NULL = "Epic cannot be null";
+    public static final String TASK_CANNOT_BE_NULL = "Task cannot be null";
+    public static final String SUBTASK_CANNOT_BE_NULL = "Subtask cannot be null";
+    public static final String SUBTASK_DOES_NOT_EXIST = "Subtask does not exist";
+    public static final String EPIC_DOES_NOT_EXIST = "Epic does not exist";
+    public static final String TASK_DOES_NOT_EXIST = "Task does not exist";
     private final HashMap<Integer, Epic> epics;
     private final HashMap<Integer, Task> tasks;
     private final HashMap<Integer, Subtask> subtasks;
@@ -46,60 +53,52 @@ public class Manager {
     }
 
     public Epic getEpicById(int id) {
-        return epics.get(id);
+        return requireNonNull(epics.get(id), EPIC_DOES_NOT_EXIST);
     }
 
     public Task getTaskById(int id) {
-        return tasks.get(id);
+        return requireNonNull(tasks.get(id), TASK_DOES_NOT_EXIST);
     }
 
     public Subtask getSubtaskById(int id) {
-        return subtasks.get(id);
+        return requireNonNull(subtasks.get(id), SUBTASK_DOES_NOT_EXIST);
     }
 
     public void createEpic(Epic epic) {
+        requireNonNull(epic, EPIC_CANNOT_BE_NULL);
         epics.put(epic.getId(), epic);
     }
 
     public void createTask(Task task) {
+        requireNonNull(task, TASK_CANNOT_BE_NULL);
         tasks.put(task.getId(), task);
     }
 
     public void createSubtask(Subtask subtask) {
+        requireNonNull(subtask, SUBTASK_CANNOT_BE_NULL);
+        Epic oldEpic = getEpicById(subtask.getEpicId());
         subtasks.put(subtask.getId(), subtask);
-        epics.get(subtask.getEpicId()).getSubtasks().add(subtask.getId());
+        Set<Subtask> newSubtasks = new HashSet<>(getEpicSubtasks(oldEpic));
+        newSubtasks.add(subtask);
+        Epic epic = Epic.create(oldEpic.getTitle(), oldEpic.getDescription(), newSubtasks, oldEpic.getId());
+        epics.replace(epic.getId(), epic);
     }
 
     public void updateEpic(Epic epic) {
+        requireNonNull(epic, EPIC_CANNOT_BE_NULL);
         epics.replace(epic.getId(), epic);
     }
 
     public void updateTask(Task task) {
+        requireNonNull(task, TASK_CANNOT_BE_NULL);
         tasks.replace(task.getId(), task);
     }
 
     public void updateSubtask(Subtask subtask) {
-        Subtask oldSubtask = subtasks.get(subtask.getId());
-        subtasks.replace(subtask.getId(), subtask);
-
-        if (oldSubtask != null) {
-            if (oldSubtask.getEpicId() != subtask.getEpicId()) {
-                Epic oldEpic = epics.get(oldSubtask.getEpicId());
-                oldEpic.getSubtasks().remove(subtask.getId());
-                Epic newEpic = epics.get(subtask.getEpicId());
-                newEpic.getSubtasks().add(subtask.getId());
-            }
-
-            if (oldSubtask.getStatus() != subtask.getStatus()) {
-                Epic oldEpic = epics.get(subtask.getEpicId());
-
-                Epic epic = Epic.create(oldEpic.getTitle(),
-                        oldEpic.getDescription(),
-                        getEpicSubtasks(oldEpic),
-                        oldEpic.getId());
-                epics.replace(epic.getId(), epic);
-            }
-        }
+        requireNonNull(subtask, SUBTASK_CANNOT_BE_NULL);
+        Subtask oldSubtask = getSubtaskById(subtask.getId());
+        deleteSubtaskById(oldSubtask.getId());
+        createSubtask(subtask);
     }
 
     public void deleteEpicById(int id) {
@@ -114,7 +113,12 @@ public class Manager {
     }
 
     public void deleteSubtaskById(int id) {
-        getEpicById(getSubtaskById(id).getEpicId()).getSubtasks().remove(id);
+        Subtask subtask = getSubtaskById(id);
+        Epic oldEpic = getEpicById(subtask.getEpicId());
+        Set<Subtask> newSubtasks = new HashSet<>(getEpicSubtasks(oldEpic));
+        newSubtasks.remove(subtask);
+        Epic epic = Epic.create(oldEpic.getTitle(), oldEpic.getDescription(), newSubtasks, oldEpic.getId());
+        updateEpic(epic);
         subtasks.remove(id);
     }
 
