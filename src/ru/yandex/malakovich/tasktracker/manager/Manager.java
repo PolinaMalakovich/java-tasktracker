@@ -114,6 +114,7 @@ public class Manager {
     }
 
     public void deleteSubtaskById(Integer id) {
+        getEpicById(getSubtaskById(id).getEpicId()).getSubtasks().remove(id);
         subtasks.remove(id);
     }
 
