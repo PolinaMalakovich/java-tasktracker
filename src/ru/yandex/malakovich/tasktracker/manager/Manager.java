@@ -45,15 +45,15 @@ public class Manager {
         subtasks.clear();
     }
 
-    public Epic getEpicById(Integer id) {
+    public Epic getEpicById(int id) {
         return epics.get(id);
     }
 
-    public Task getTaskById(Integer id) {
+    public Task getTaskById(int id) {
         return tasks.get(id);
     }
 
-    public Subtask getSubtaskById(Integer id) {
+    public Subtask getSubtaskById(int id) {
         return subtasks.get(id);
     }
 
@@ -102,25 +102,25 @@ public class Manager {
         }
     }
 
-    public void deleteEpicById(Integer id) {
-        for (Integer i : getEpicById(id).getSubtasks()) {
+    public void deleteEpicById(int id) {
+        for (int i : getEpicById(id).getSubtasks()) {
             deleteSubtaskById(i);
         }
         epics.remove(id);
     }
 
-    public void deleteTaskById(Integer id) {
+    public void deleteTaskById(int id) {
         tasks.remove(id);
     }
 
-    public void deleteSubtaskById(Integer id) {
+    public void deleteSubtaskById(int id) {
         getEpicById(getSubtaskById(id).getEpicId()).getSubtasks().remove(id);
         subtasks.remove(id);
     }
 
     public Set<Subtask> getEpicSubtasks(Epic epic) {
         Set<Subtask> epicSubtasks = new HashSet<>();
-        for (Integer id : epic.getSubtasks()) {
+        for (int id : epic.getSubtasks()) {
             epicSubtasks.add(subtasks.get(id));
         }
 
