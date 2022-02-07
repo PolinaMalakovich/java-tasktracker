@@ -27,16 +27,16 @@ public class Manager {
         this.subtasks = subtasks;
     }
 
-    public HashMap<Integer, Epic> getEpics() {
-        return epics;
+    public Set<Epic> getEpics() {
+        return new HashSet<>(epics.values());
     }
 
-    public HashMap<Integer, Task> getTasks() {
-        return tasks;
+    public Set<Task> getTasks() {
+        return new HashSet<>(tasks.values());
     }
 
-    public HashMap<Integer, Subtask> getSubtasks() {
-        return subtasks;
+    public Set<Subtask> getSubtasks() {
+        return new HashSet<>(subtasks.values());
     }
 
     public void deleteAllEpics() {
