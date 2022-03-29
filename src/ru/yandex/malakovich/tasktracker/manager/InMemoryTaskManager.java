@@ -9,15 +9,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final HashMap<Integer, Epic> epics;
-    private final HashMap<Integer, Task> tasks;
-    private final HashMap<Integer, Subtask> subtasks;
+    private HashMap<Integer, Epic> epics;
+    private HashMap<Integer, Task> tasks;
+    private HashMap<Integer, Subtask> subtasks;
 
     public InMemoryTaskManager(HashMap<Integer, Epic> epics, HashMap<Integer, Task> tasks, HashMap<Integer, Subtask> subtasks) {
         this.epics = epics;
         this.tasks = tasks;
         this.subtasks = subtasks;
     }
+
+    public InMemoryTaskManager() {}
 
     @Override
     public Set<Epic> getEpics() {
