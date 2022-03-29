@@ -8,66 +8,78 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Manager {
+public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Epic> epics;
     private final HashMap<Integer, Task> tasks;
     private final HashMap<Integer, Subtask> subtasks;
 
-    public Manager(HashMap<Integer, Epic> epics, HashMap<Integer, Task> tasks, HashMap<Integer, Subtask> subtasks) {
+    public InMemoryTaskManager(HashMap<Integer, Epic> epics, HashMap<Integer, Task> tasks, HashMap<Integer, Subtask> subtasks) {
         this.epics = epics;
         this.tasks = tasks;
         this.subtasks = subtasks;
     }
 
+    @Override
     public Set<Epic> getEpics() {
         return new HashSet<>(epics.values());
     }
 
+    @Override
     public Set<Task> getTasks() {
         return new HashSet<>(tasks.values());
     }
 
+    @Override
     public Set<Subtask> getSubtasks() {
         return new HashSet<>(subtasks.values());
     }
 
+    @Override
     public void deleteAllEpics() {
         epics.clear();
         deleteAllSubtasks();
     }
 
+    @Override
     public void deleteAllTasks() {
         tasks.clear();
     }
 
+    @Override
     public void deleteAllSubtasks() {
         subtasks.clear();
     }
 
+    @Override
     public Epic getEpicById(int id) {
         return epics.get(id);
     }
 
+    @Override
     public Task getTaskById(int id) {
         return tasks.get(id);
     }
 
+    @Override
     public Subtask getSubtaskById(int id) {
         return subtasks.get(id);
     }
 
+    @Override
     public void createEpic(Epic epic) {
         if (epic != null) {
             epics.put(epic.getId(), epic);
         }
     }
 
+    @Override
     public void createTask(Task task) {
         if (task != null) {
             tasks.put(task.getId(), task);
         }
     }
 
+    @Override
     public void createSubtask(Subtask subtask) {
         if (subtask != null) {
             Epic oldEpic = getEpicById(subtask.getEpicId());
@@ -81,18 +93,21 @@ public class Manager {
         }
     }
 
+    @Override
     public void updateEpic(Epic epic) {
         if (epic != null) {
             epics.replace(epic.getId(), epic);
         }
     }
 
+    @Override
     public void updateTask(Task task) {
         if (task != null) {
             tasks.replace(task.getId(), task);
         }
     }
 
+    @Override
     public void updateSubtask(Subtask subtask) {
         if (subtask != null) {
             Subtask oldSubtask = getSubtaskById(subtask.getId());
@@ -103,6 +118,7 @@ public class Manager {
         }
     }
 
+    @Override
     public void deleteEpicById(int id) {
         Epic epic = getEpicById(id);
         if (epic != null) {
@@ -113,10 +129,12 @@ public class Manager {
         }
     }
 
+    @Override
     public void deleteTaskById(int id) {
         tasks.remove(id);
     }
 
+    @Override
     public void deleteSubtaskById(int id) {
         Subtask subtask = getSubtaskById(id);
         if (subtask != null) {
@@ -131,6 +149,7 @@ public class Manager {
         }
     }
 
+    @Override
     public Set<Subtask> getEpicSubtasks(Epic epic) {
         Set<Subtask> epicSubtasks = new HashSet<>();
 

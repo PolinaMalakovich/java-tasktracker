@@ -1,6 +1,7 @@
 package ru.yandex.malakovich.tasktracker;
 
-import ru.yandex.malakovich.tasktracker.manager.Manager;
+import ru.yandex.malakovich.tasktracker.manager.InMemoryTaskManager;
+import ru.yandex.malakovich.tasktracker.manager.TaskManager;
 import ru.yandex.malakovich.tasktracker.model.Epic;
 import ru.yandex.malakovich.tasktracker.model.Status;
 import ru.yandex.malakovich.tasktracker.model.Subtask;
@@ -12,7 +13,7 @@ import java.util.HashSet;
 public class Main {
     public static void main(String[] args) {
         final IdGenerator idGenerator = new IdGenerator();
-        Manager manager = new Manager(new HashMap<>(), new HashMap<>(), new HashMap<>());
+        TaskManager manager = new InMemoryTaskManager(new HashMap<>(), new HashMap<>(), new HashMap<>());
         Task task1 = new Task("tidy up", "just do it!", idGenerator.getNewId());
         manager.createTask(task1);
         Task task2 = new Task("walk the dog", "woof-woof", idGenerator.getNewId());
