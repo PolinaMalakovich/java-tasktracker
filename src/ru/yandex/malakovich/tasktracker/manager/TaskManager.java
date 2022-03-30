@@ -4,6 +4,7 @@ import ru.yandex.malakovich.tasktracker.model.Epic;
 import ru.yandex.malakovich.tasktracker.model.Subtask;
 import ru.yandex.malakovich.tasktracker.model.Task;
 
+import java.util.List;
 import java.util.Set;
 
 public interface TaskManager {
@@ -45,4 +46,6 @@ public interface TaskManager {
     void deleteSubtaskById(int id);
 
     Set<Subtask> getEpicSubtasks(Epic epic);
+
+    List<Task> history();
 }

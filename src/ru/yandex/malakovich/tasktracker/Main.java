@@ -15,6 +15,9 @@ public class Main {
     public static void main(String[] args) {
         final IdGenerator idGenerator = new IdGenerator();
         TaskManager manager = Managers.getDefault();
+
+        System.out.println("History: " + manager.history() + "\n");
+
         Task task1 = new Task("tidy up", "just do it!", idGenerator.getNewId());
         manager.createTask(task1);
         Task task2 = new Task("walk the dog", "woof-woof", idGenerator.getNewId());
@@ -69,5 +72,19 @@ public class Main {
         System.out.println(manager.getTasks());
         System.out.println(manager.getSubtasks());
         System.out.println();
+
+        Task historyTask1 = new Task("check if history works", "it's gonna be legendary!", idGenerator.getNewId());
+        manager.createTask(historyTask1);
+        manager.getTaskById(historyTask1.getId());
+
+        Task historyTask2 = new Task("double-check if history works", "the history repeats itself", idGenerator.getNewId());
+        manager.createTask(historyTask2);
+        manager.getTaskById(historyTask2.getId());
+
+        Task historyTask3 = new Task("triple-check if history works", "truly historic moment", idGenerator.getNewId());
+        manager.createTask(historyTask3);
+        manager.getTaskById(historyTask3.getId());
+
+        System.out.println("History: " + manager.history());
     }
 }

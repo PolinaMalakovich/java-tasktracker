@@ -6,12 +6,14 @@ import ru.yandex.malakovich.tasktracker.model.Task;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Epic> epics;
     private HashMap<Integer, Task> tasks;
     private HashMap<Integer, Subtask> subtasks;
+    private final HistoryManager historyManager = Managers.getDefaultHistory();
 
     public InMemoryTaskManager(HashMap<Integer, Epic> epics, HashMap<Integer, Task> tasks, HashMap<Integer, Subtask> subtasks) {
         this.epics = epics;
@@ -19,12 +21,12 @@ public class InMemoryTaskManager implements TaskManager {
         this.subtasks = subtasks;
     }
 
-    public InMemoryTaskManager() {}
+    public InMemoryTaskManager() {
+        this(new HashMap<>(), new HashMap<>(), new HashMap<>());
+    }
 
     @Override
-    public Set<Epic> getEpics() {
-        return new HashSet<>(epics.values());
-    }
+    public Set<Epic> getEpics() { return new HashSet<>(epics.values()); }
 
     @Override
     public Set<Task> getTasks() {
@@ -54,16 +56,19 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic getEpicById(int id) {
+        historyManager.add(epics.get(id));
         return epics.get(id);
     }
 
     @Override
     public Task getTaskById(int id) {
+        historyManager.add(tasks.get(id));
         return tasks.get(id);
     }
 
     @Override
     public Subtask getSubtaskById(int id) {
+        historyManager.add(subtasks.get(id));
         return subtasks.get(id);
     }
 
@@ -162,5 +167,10 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         return epicSubtasks;
+    }
+
+    @Override
+    public List<Task> history() {
+        return historyManager.getHistory();
     }
 }
