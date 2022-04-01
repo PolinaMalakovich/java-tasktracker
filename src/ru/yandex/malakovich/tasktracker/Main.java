@@ -1,6 +1,6 @@
 package ru.yandex.malakovich.tasktracker;
 
-import ru.yandex.malakovich.tasktracker.manager.Managers;
+import ru.yandex.malakovich.tasktracker.util.Managers;
 import ru.yandex.malakovich.tasktracker.manager.TaskManager;
 import ru.yandex.malakovich.tasktracker.model.Epic;
 import ru.yandex.malakovich.tasktracker.model.Status;
