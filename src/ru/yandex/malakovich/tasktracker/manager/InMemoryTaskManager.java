@@ -16,7 +16,8 @@ public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Subtask> subtasks;
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
-    public InMemoryTaskManager(HashMap<Integer, Epic> epics, HashMap<Integer, Task> tasks, HashMap<Integer, Subtask> subtasks) {
+    public InMemoryTaskManager(HashMap<Integer, Epic> epics, HashMap<Integer, Task> tasks, HashMap<Integer,
+            Subtask> subtasks) {
         this.epics = epics;
         this.tasks = tasks;
         this.subtasks = subtasks;
