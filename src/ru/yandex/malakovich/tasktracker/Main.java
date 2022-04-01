@@ -77,7 +77,9 @@ public class Main {
         manager.createTask(historyTask1);
         manager.getTaskById(historyTask1.getId());
 
-        Task historyTask2 = new Task("double-check if history works", "the history repeats itself", idGenerator.getNewId());
+        Task historyTask2 = new Task("double-check if history works",
+                "the history repeats itself",
+                idGenerator.getNewId());
         manager.createTask(historyTask2);
         manager.getTaskById(historyTask2.getId());
 
