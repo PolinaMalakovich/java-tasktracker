@@ -1,6 +1,5 @@
 package ru.yandex.malakovich.tasktracker;
 
-import ru.yandex.malakovich.tasktracker.manager.InMemoryTaskManager;
 import ru.yandex.malakovich.tasktracker.manager.Managers;
 import ru.yandex.malakovich.tasktracker.manager.TaskManager;
 import ru.yandex.malakovich.tasktracker.model.Epic;
@@ -8,7 +7,6 @@ import ru.yandex.malakovich.tasktracker.model.Status;
 import ru.yandex.malakovich.tasktracker.model.Subtask;
 import ru.yandex.malakovich.tasktracker.model.Task;
 
-import java.util.HashMap;
 import java.util.HashSet;
 
 public class Main {
