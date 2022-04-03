@@ -86,5 +86,10 @@ public class Main {
         manager.getTaskById(historyTask3.getId());
 
         System.out.println("History: " + manager.history());
+
+        manager.deleteAllTasks();
+        manager.deleteAllEpics();
+
+        System.out.println("History: " + manager.history());
     }
 }
