@@ -17,6 +17,17 @@ public class Epic extends Task {
         Objects.requireNonNull(description);
         Objects.requireNonNull(subtasks);
 
+        Status status = getStatus(subtasks);
+
+        Set<Integer> subtasksIds = new HashSet<>();
+        for (Subtask s : subtasks) {
+            subtasksIds.add(s.getId());
+        }
+
+        return new Epic(title, description, status, subtasksIds, id);
+    }
+
+    private static Status getStatus(Set<Subtask> subtasks) {
         int statusNew = 0;
         int statusDone = 0;
 
@@ -31,22 +42,18 @@ public class Epic extends Task {
             }
         }
 
+        int subtasksSize = subtasks.size();
         Status status;
 
-        if (statusNew == subtasks.size()) {
+        if (statusNew == subtasksSize) {
             status = Status.NEW;
-        } else if (statusDone == subtasks.size()) {
+        } else if (statusDone == subtasksSize) {
             status = Status.DONE;
         } else {
             status = Status.IN_PROGRESS;
         }
 
-        Set<Integer> subtasksIds = new HashSet<>();
-        for (Subtask s : subtasks) {
-            subtasksIds.add(s.getId());
-        }
-
-        return new Epic(title, description, status, subtasksIds, id);
+        return status;
     }
 
     public Set<Integer> getSubtasks() {
