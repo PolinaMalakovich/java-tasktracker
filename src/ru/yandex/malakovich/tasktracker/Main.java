@@ -1,5 +1,6 @@
 package ru.yandex.malakovich.tasktracker;
 
+import ru.yandex.malakovich.tasktracker.manager.InMemoryTaskManager;
 import ru.yandex.malakovich.tasktracker.util.Managers;
 import ru.yandex.malakovich.tasktracker.manager.TaskManager;
 import ru.yandex.malakovich.tasktracker.model.Epic;
@@ -11,36 +12,35 @@ import java.util.HashSet;
 
 public class Main {
     public static void main(String[] args) {
-        final IdGenerator idGenerator = new IdGenerator();
         TaskManager manager = Managers.getDefault();
 
         System.out.println("History: " + manager.history() + "\n");
 
-        Task task1 = new Task("tidy up", "just do it!", idGenerator.getNewId());
+        Task task1 = new Task("tidy up", "just do it!", InMemoryTaskManager.getId());
         manager.createTask(task1);
-        Task task2 = new Task("walk the dog", "woof-woof", idGenerator.getNewId());
+        Task task2 = new Task("walk the dog", "woof-woof", InMemoryTaskManager.getId());
         manager.createTask(task2);
         Epic epic1 = Epic.create("prepare for OCA",
                 "life is hard",
                 new HashSet<>(),
-                idGenerator.getNewId());
+                InMemoryTaskManager.getId());
         manager.createEpic(epic1);
         Subtask subtask1 = new Subtask("read documentation",
                 "it's gonna be so much fun",
                 Status.NEW,
                 epic1.getId(),
-                idGenerator.getNewId());
+                InMemoryTaskManager.getId());
         manager.createSubtask(subtask1);
         Subtask subtask2 = new Subtask("do practice tests",
                 "work work work",
                 Status.NEW,
                 epic1.getId(),
-                idGenerator.getNewId());
+                InMemoryTaskManager.getId());
         manager.createSubtask(subtask2);
         Epic epic2 = Epic.create("get ready for IELTS",
                 "let me speak from my heart",
                 new HashSet<>(),
-                idGenerator.getNewId());
+                InMemoryTaskManager.getId());
         manager.createEpic(epic2);
 
         System.out.println(manager.getEpics());
@@ -71,17 +71,17 @@ public class Main {
         System.out.println(manager.getSubtasks());
         System.out.println();
 
-        Task historyTask1 = new Task("check if history works", "it's gonna be legendary!", idGenerator.getNewId());
+        Task historyTask1 = new Task("check if history works", "it's gonna be legendary!", InMemoryTaskManager.getId());
         manager.createTask(historyTask1);
         manager.getTaskById(historyTask1.getId());
 
         Task historyTask2 = new Task("double-check if history works",
                 "the history repeats itself",
-                idGenerator.getNewId());
+                InMemoryTaskManager.getId());
         manager.createTask(historyTask2);
         manager.getTaskById(historyTask2.getId());
 
-        Task historyTask3 = new Task("triple-check if history works", "truly historic moment", idGenerator.getNewId());
+        Task historyTask3 = new Task("triple-check if history works", "truly historic moment", InMemoryTaskManager.getId());
         manager.createTask(historyTask3);
         manager.getTaskById(historyTask3.getId());
 

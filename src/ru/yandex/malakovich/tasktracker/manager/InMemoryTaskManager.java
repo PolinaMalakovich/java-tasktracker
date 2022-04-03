@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 public class InMemoryTaskManager implements TaskManager {
+    private static int id = 0;
     private HashMap<Integer, Epic> epics;
     private HashMap<Integer, Task> tasks;
     private HashMap<Integer, Subtask> subtasks;
@@ -37,6 +38,10 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Subtask> getSubtasks() {
         return new ArrayList<>(subtasks.values());
+    }
+
+    public static int getId() {
+        return id++;
     }
 
     @Override
