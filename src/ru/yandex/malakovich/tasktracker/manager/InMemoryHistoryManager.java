@@ -9,6 +9,19 @@ public class InMemoryHistoryManager implements HistoryManager {
     private final List<Task> history = new LinkedList<>();
 
     @Override
+    public void remove(Task task) {
+        List<Task> taskList = new LinkedList<>();
+
+        for (Task t : history) {
+            if (t.getId() == task.getId()) {
+                taskList.add(t);
+            }
+        }
+
+        history.removeAll(taskList);
+    }
+
+    @Override
     public void add(Task task) {
         if (task != null) {
             if (history.size() == 10) {

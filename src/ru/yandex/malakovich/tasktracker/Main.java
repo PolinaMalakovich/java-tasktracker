@@ -89,6 +89,7 @@ public class Main {
 
         manager.deleteAllTasks();
         manager.deleteAllEpics();
+        manager.deleteAllSubtasks();
 
         System.out.println("History: " + manager.history());
     }
