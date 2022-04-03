@@ -10,22 +10,22 @@ import java.util.Set;
 public interface TaskManager {
 
     /**
-     * Returns a set of values from the epics map.
-     * @return a set of values from the epics map
+     * Returns a list of values from the epics map.
+     * @return a list of values from the epics map
      */
-    Set<Epic> getEpics();
+    List<Epic> getEpics();
 
     /**
-     * Returns a set of values from the tasks map.
-     * @return a set of values from the tasks map
+     * Returns a list of values from the tasks map.
+     * @return a list of values from the tasks map
      */
-    Set<Task> getTasks();
+    List<Task> getTasks();
 
     /**
-     * Returns a set of values from the subtasks map.
-     * @return a set of values from the subtasks map
+     * Returns a list of values from the subtasks map.
+     * @return a list of values from the subtasks map
      */
-    Set<Subtask> getSubtasks();
+    List<Subtask> getSubtasks();
 
     /**
      * Removes all the mappings from the epics map and the subtasks map.

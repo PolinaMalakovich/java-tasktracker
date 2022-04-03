@@ -5,6 +5,7 @@ import ru.yandex.malakovich.tasktracker.model.Subtask;
 import ru.yandex.malakovich.tasktracker.model.Task;
 import ru.yandex.malakovich.tasktracker.util.Managers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,16 +29,14 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Set<Epic> getEpics() { return new HashSet<>(epics.values()); }
+    public List<Epic> getEpics() { return new ArrayList<>(epics.values()); }
 
     @Override
-    public Set<Task> getTasks() {
-        return new HashSet<>(tasks.values());
-    }
+    public List<Task> getTasks() { return new ArrayList<>(tasks.values()); }
 
     @Override
-    public Set<Subtask> getSubtasks() {
-        return new HashSet<>(subtasks.values());
+    public List<Subtask> getSubtasks() {
+        return new ArrayList<>(subtasks.values());
     }
 
     @Override
