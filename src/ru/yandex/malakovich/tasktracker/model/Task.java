@@ -27,7 +27,7 @@ public class Task {
         return description;
     }
 
-    public Status getStatus() {
+    Status getStatus() {
         return status;
     }
 
@@ -56,7 +56,7 @@ public class Task {
         return "Task{" + toStringHelper() + '}';
     }
 
-    protected String toStringHelper() {
+    String toStringHelper() {
         return "title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
