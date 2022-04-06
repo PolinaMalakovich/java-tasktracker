@@ -13,21 +13,10 @@ import java.util.Set;
 
 public class InMemoryTaskManager implements TaskManager {
     private static int id = 1;
-    private HashMap<Integer, Epic> epics;
-    private HashMap<Integer, Task> tasks;
-    private HashMap<Integer, Subtask> subtasks;
+    private final HashMap<Integer, Epic> epics = new HashMap<>();
+    private final HashMap<Integer, Task> tasks = new HashMap<>();
+    private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
     private final HistoryManager historyManager = Managers.getDefaultHistory();
-
-    private InMemoryTaskManager(HashMap<Integer, Epic> epics, HashMap<Integer, Task> tasks, HashMap<Integer,
-            Subtask> subtasks) {
-        this.epics = epics;
-        this.tasks = tasks;
-        this.subtasks = subtasks;
-    }
-
-    public InMemoryTaskManager() {
-        this(new HashMap<>(), new HashMap<>(), new HashMap<>());
-    }
 
     @Override
     public List<Epic> getEpics() { return new ArrayList<>(epics.values()); }
