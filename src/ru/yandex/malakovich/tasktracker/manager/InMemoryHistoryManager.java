@@ -12,9 +12,9 @@ public class InMemoryHistoryManager implements HistoryManager {
     public void remove(Task task) {
         List<Task> taskList = new LinkedList<>();
 
-        for (Task t : history) {
-            if (t.getId() == task.getId()) {
-                taskList.add(t);
+        for (Task historyItem : history) {
+            if (historyItem.getId() == task.getId()) {
+                taskList.add(historyItem);
             }
         }
 
