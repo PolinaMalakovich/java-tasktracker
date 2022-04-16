@@ -85,6 +85,14 @@ public class Main {
         manager.createTask(historyTask3);
         manager.getTaskById(historyTask3.getId());
 
+        manager.getTaskById(1);
+        manager.getTaskById(7);
+        manager.getTaskById(1);
+        manager.getTaskById(7);
+        manager.getTaskById(8);
+        manager.getTaskById(7);
+        manager.getTaskById(8);
+
         System.out.println("History: " + manager.history());
 
         manager.deleteAllTasks();
