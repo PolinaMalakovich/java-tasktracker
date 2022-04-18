@@ -75,11 +75,11 @@ public class InMemoryHistoryManager implements HistoryManager {
             tail = nodeToRemove.prev;
         }
 
-        if (nodeToRemove.next != null) {
+        if (nodeToRemove.hasNext()) {
             nodeToRemove.next.prev = nodeToRemove.prev;
         }
 
-        if (nodeToRemove.prev != null) {
+        if (nodeToRemove.hasPrev()) {
             nodeToRemove.prev.next = nodeToRemove.next;
         }
     }
