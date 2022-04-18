@@ -10,7 +10,6 @@ import java.util.Map;
 public class InMemoryHistoryManager implements HistoryManager {
     private Node head;
     private Node tail;
-    private int size = 0;
     private Map<Integer, Node> map = new HashMap<>();
 
     @Override
@@ -49,8 +48,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         } else {
             oldTail.next = newNode;
         }
-
-        size++;
     }
 
     private List<Task> getTasks() {
@@ -83,8 +80,5 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (nodeToRemove.prev != null) {
             nodeToRemove.prev.next = nodeToRemove.next;
         }
-
-
-        size--;
     }
 }
