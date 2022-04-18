@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private Node head;
@@ -46,7 +47,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (oldTail == null) {
             head = newNode;
         } else {
-            oldTail.next = newNode;
+            oldTail.setNext(newNode);
         }
     }
 
@@ -55,8 +56,8 @@ public class InMemoryHistoryManager implements HistoryManager {
 
         Node node = head;
         while (node != null) {
-            taskList.add(node.data);
-            node = node.next;
+            taskList.add(node.getData());
+            node = node.getNext();
         }
 
         return taskList;
@@ -68,19 +69,63 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
 
         if (head == nodeToRemove) {
-            head = nodeToRemove.next;
+            head = nodeToRemove.getNext();
         }
 
         if (tail == nodeToRemove) {
-            tail = nodeToRemove.prev;
+            tail = nodeToRemove.getPrev();
         }
 
         if (nodeToRemove.hasNext()) {
-            nodeToRemove.next.prev = nodeToRemove.prev;
+            nodeToRemove.getNext().setPrev(nodeToRemove.getPrev());
         }
 
         if (nodeToRemove.hasPrev()) {
-            nodeToRemove.prev.next = nodeToRemove.next;
+            nodeToRemove.getPrev().setNext(nodeToRemove.getNext());
+        }
+    }
+
+    private static class Node {
+        private Task data;
+        private Node next;
+        private Node prev;
+
+        Node(Node prev, Task data, Node next) {
+            this.data = data;
+            this.next = next;
+            this.prev = prev;
+        }
+
+        Task getData() {
+            return data;
+        }
+
+        void setData(Task data) {
+            this.data = data;
+        }
+
+        Node getNext() {
+            return next;
+        }
+
+        void setNext(Node next) {
+            this.next = next;
+        }
+
+        Node getPrev() {
+            return prev;
+        }
+
+        void setPrev(Node prev) {
+            this.prev = prev;
+        }
+
+        boolean hasNext() {
+            return Objects.nonNull(next);
+        }
+
+        boolean hasPrev() {
+            return Objects.nonNull(prev);
         }
     }
 }
