@@ -81,7 +81,8 @@ public class Main {
         manager.createTask(historyTask2);
         manager.getTaskById(historyTask2.getId());
 
-        Task historyTask3 = new Task("triple-check if history works", "truly historic moment", InMemoryTaskManager.getId());
+        Task historyTask3 = new Task("triple-check if history works",
+                "truly historic moment", InMemoryTaskManager.getId());
         manager.createTask(historyTask3);
         manager.getTaskById(historyTask3.getId());
 
