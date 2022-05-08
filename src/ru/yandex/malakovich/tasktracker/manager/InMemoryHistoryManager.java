@@ -100,10 +100,6 @@ public class InMemoryHistoryManager implements HistoryManager {
             return data;
         }
 
-        void setData(Task data) {
-            this.data = data;
-        }
-
         Node getNext() {
             return next;
         }
