@@ -125,8 +125,8 @@ public interface TaskManager {
     Set<Subtask> getEpicSubtasks(Epic epic);
 
     /**
-     * Returns a list of ten Task objects that were recently viewed.
-     * @return a list of ten Task objects that were recently viewed
+     * Returns a list of unique Task objects that were recently viewed.
+     * @return a list of unique Task objects that were recently viewed
      */
     List<Task> history();
 }
