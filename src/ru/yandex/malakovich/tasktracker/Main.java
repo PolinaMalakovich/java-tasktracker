@@ -86,7 +86,7 @@ public class Main {
         manager.createTask(historyTask3);
         manager.getTaskById(historyTask3.getId());
 
-        manager.getTaskById(1);
+        Task task = manager.getTaskById(1);
         manager.getTaskById(7);
         manager.getTaskById(1);
         manager.getTaskById(7);
