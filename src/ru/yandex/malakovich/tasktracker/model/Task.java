@@ -27,7 +27,7 @@ public class Task {
         return description;
     }
 
-    Status getStatus() {
+    public Status getStatus() {
         return status;
     }
 

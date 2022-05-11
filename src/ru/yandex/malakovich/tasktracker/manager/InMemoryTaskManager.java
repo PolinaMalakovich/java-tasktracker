@@ -13,10 +13,10 @@ import java.util.Set;
 
 public class InMemoryTaskManager implements TaskManager {
     private static int id = 1;
-    private final HashMap<Integer, Epic> epics = new HashMap<>();
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
-    private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
-    private final HistoryManager historyManager = Managers.getDefaultHistory();
+    protected final HashMap<Integer, Epic> epics = new HashMap<>();
+    protected final HashMap<Integer, Task> tasks = new HashMap<>();
+    protected final HashMap<Integer, Subtask> subtasks = new HashMap<>();
+    protected final HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
     public List<Epic> getEpics() { return new ArrayList<>(epics.values()); }
@@ -66,7 +66,7 @@ public class InMemoryTaskManager implements TaskManager {
 
             return epic;
         } else {
-            System.out.println("Id not found");
+            System.out.println("Epic not found, id=" + id);
 
             return null;
         }
@@ -80,7 +80,7 @@ public class InMemoryTaskManager implements TaskManager {
 
             return task;
         } else {
-            System.out.println("Id not found");
+            System.out.println("Task not found, id=" + id);
 
             return null;
         }
@@ -94,7 +94,7 @@ public class InMemoryTaskManager implements TaskManager {
 
             return subtask;
         } else {
-            System.out.println("Id not found");
+            System.out.println("Subtask not found, id=" + id);
 
             return null;
         }
@@ -172,7 +172,7 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.remove(tasks.get(id));
             tasks.remove(id);
         } else {
-            System.out.println("Id not found");
+            System.out.println("Could not delete task, id=" + id);
         }
     }
 

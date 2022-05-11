@@ -11,7 +11,7 @@ import java.util.Objects;
 public class InMemoryHistoryManager implements HistoryManager {
     private Node head;
     private Node tail;
-    private Map<Integer, Node> map = new HashMap<>();
+    private final Map<Integer, Node> map = new HashMap<>();
 
     @Override
     public void remove(Task task) {
@@ -86,7 +86,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     private static class Node {
-        private Task data;
+        private final Task data;
         private Node next;
         private Node prev;
 
