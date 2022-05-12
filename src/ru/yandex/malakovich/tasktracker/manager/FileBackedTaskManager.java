@@ -6,6 +6,7 @@ import ru.yandex.malakovich.tasktracker.model.Status;
 import ru.yandex.malakovich.tasktracker.model.Subtask;
 import ru.yandex.malakovich.tasktracker.model.Task;
 import ru.yandex.malakovich.tasktracker.model.Type;
+import ru.yandex.malakovich.tasktracker.util.ArrayUtils;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -249,26 +250,23 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         if (value != null) {
             String[] values = value.split(",");
-            Status status = null;
 
-            switch (values[3]) {
-                case "NEW":
-                    status = NEW;
-                    break;
-                case "IN_PROGRESS":
-                    status = IN_PROGRESS;
-                    break;
-                case "DONE":
-                    status = DONE;
-                    break;
-            }
+            int id = Integer.parseInt(values[0]);
+            Type type = Type.valueOf(values[1]);
+            String title = values[2];
+            Status status = Status.valueOf(values[3]);
+            String description = values[4];
 
-            if (values[1].equals(SUBTASK.name())) {
-                task = new Subtask(values[2], values[4], status, Integer.parseInt(values[5]), Integer.parseInt(values[0]));
-            } else if (values[1].equals(EPIC.name())) {
-                task = Epic.create(values[2], values[4], new HashSet<>(), Integer.parseInt(values[0]));
-            } else {
-                task = new Task(values[2], values[4], status, Integer.parseInt(values[0]));
+            switch (type) {
+                case SUBTASK:
+                    task = new Subtask(title, description, status, Integer.parseInt(values[5]), id);
+                    break;
+                case EPIC:
+                    task = Epic.create(title, description, new HashSet<>(), id);
+                    break;
+                case TASK:
+                    task = new Task(title, description, status, id);
+                    break;
             }
         }
 
