@@ -250,6 +250,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         if (value != null) {
             String[] values = value.split(",");
+            ArrayUtils.trimElements(values);
 
             int id = Integer.parseInt(values[0]);
             Type type = Type.valueOf(values[1]);
