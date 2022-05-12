@@ -60,6 +60,10 @@ public class Epic extends Task {
         return subtasks;
     }
 
+    public Type getType() {
+        return Type.EPIC;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
