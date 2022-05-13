@@ -202,21 +202,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private static String historyManagerToString(HistoryManager manager) {
-        StringBuilder builder = new StringBuilder();
+        String result = "";
 
         if (manager != null) {
-            List<Task> list = manager.getHistory();
+            List<String> ids = new ArrayList<>();
 
-            if (!list.isEmpty()) {
-                for (Task task : list) {
-                    builder.append(task.getId()).append(",");
-                }
-
-                builder.deleteCharAt(builder.length() - 1);
+            for (Task task : manager.getHistory()) {
+                ids.add(String.valueOf(task.getId()));
             }
+
+            result = String.join(",", ids);
         }
 
-        return builder.toString();
+        return result;
     }
 
     private static List<Integer> historyManagerFromString(String value) {
