@@ -1,5 +1,6 @@
 package ru.yandex.malakovich.tasktracker.manager;
 
+import ru.yandex.malakovich.tasktracker.exception.ManagerLoadException;
 import ru.yandex.malakovich.tasktracker.exception.ManagerSaveException;
 import ru.yandex.malakovich.tasktracker.model.Epic;
 import ru.yandex.malakovich.tasktracker.model.Status;
@@ -149,16 +150,22 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             fileWriter.write(historyManagerToString(historyManager));
 
         } catch (IOException exception) {
-            throw new ManagerSaveException();
+            throw new ManagerSaveException("Can't save to file: " + file.getName(), exception);
         }
     }
 
-    static FileBackedTaskManager loadFromFile(File file) throws IOException {
+    static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager manager = new FileBackedTaskManager(file);
         Map<Integer, Task> allTasks = new HashMap<>();
         Map<Integer, List<Integer>> subtasks = new HashMap<>();
 
-        List<String> list = Files.readAllLines(file.toPath());
+        List<String> list;
+        try {
+            list = Files.readAllLines(file.toPath());
+        } catch (IOException exception) {
+            throw new ManagerLoadException("Can't read form file: " + file.getName(), exception);
+        }
+
         int splitter = list.lastIndexOf("");
 
         if (splitter >= 0) {
@@ -188,7 +195,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
 
         } else {
-            throw new IOException("Некорректный формат файла");
+            throw new ManagerLoadException("Can't read form file: " + file.getName());
         }
 
         return manager;
@@ -274,7 +281,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return task;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         FileBackedTaskManager manager = new FileBackedTaskManager(new File("taskManager.csv"));
 
         Task task1 = new Task("go to the supermarket", "buy groceries for the week", getId());
