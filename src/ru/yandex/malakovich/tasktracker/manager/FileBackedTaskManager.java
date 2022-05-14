@@ -162,7 +162,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    static FileBackedTaskManager loadFromFile(File file) {
+    public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager manager = new FileBackedTaskManager(file);
         Map<Integer, Task> allTasks = new HashMap<>();
         Map<Integer, List<Integer>> subtasks = new HashMap<>();
