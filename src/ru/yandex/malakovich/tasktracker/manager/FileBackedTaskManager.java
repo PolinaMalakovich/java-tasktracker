@@ -31,7 +31,7 @@ import static ru.yandex.malakovich.tasktracker.model.Type.TASK;
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File file;
 
-    public FileBackedTaskManager(File file) {
+    private FileBackedTaskManager(File file) {
         this.file = file;
     }
 
