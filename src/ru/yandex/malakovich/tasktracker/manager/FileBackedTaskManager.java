@@ -236,6 +236,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         if (value != null) {
             String[] values = value.split(",");
+            ArrayUtils.trimElements(values);
 
             for (String element : values) {
                 list.add(Integer.parseInt(element));
