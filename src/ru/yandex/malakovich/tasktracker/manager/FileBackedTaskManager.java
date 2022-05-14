@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -247,22 +246,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private static String taskToString(Task task) {
-        String element = null;
-        Type type = task instanceof Subtask ? SUBTASK : task instanceof Epic ? EPIC : TASK;
+        String epicId = "";
 
-        if (task != null) {
-            element = task.getId() + ","
-                    + type.name() + ","
-                    + task.getTitle() + ","
-                    + task.getStatus() + ","
-                    + task.getDescription();
-            if (task instanceof Subtask) {
-                Subtask subtask = (Subtask) task;
-                element = element + "," + subtask.getEpicId();
-            }
+        if (task == null) {
+            return null;
+        } else if (task.getType() == SUBTASK) {
+            Subtask subtask = (Subtask) task;
+            epicId = String.valueOf(subtask.getEpicId());
         }
 
-        return element;
+        return task.getId() + "," + task.getType() + "," + task.getTitle() + "," + task.getStatus() + ","
+                + task.getDescription() + "," + epicId;
     }
 
     static private Task taskFromString(String value) {
