@@ -23,9 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import static ru.yandex.malakovich.tasktracker.model.Status.NEW;
-import static ru.yandex.malakovich.tasktracker.model.Type.EPIC;
 import static ru.yandex.malakovich.tasktracker.model.Type.SUBTASK;
-import static ru.yandex.malakovich.tasktracker.model.Type.TASK;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final String HEADER = "id,type,name,status,description,epic";
@@ -190,7 +188,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                             break;
                         case EPIC:
                             Epic epic = (Epic) task;
-                            if (subtasks.containsKey(epic.getId())) epic.getSubtasks().addAll(subtasks.get(epic.getId()));
+                            if (subtasks.containsKey(epic.getId()))
+                                epic.getSubtasks().addAll(subtasks.get(epic.getId()));
                             manager.epics.put(task.getId(), epic);
                             break;
                         case TASK:

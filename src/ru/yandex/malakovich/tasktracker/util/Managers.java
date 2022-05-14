@@ -6,7 +6,8 @@ import ru.yandex.malakovich.tasktracker.manager.InMemoryTaskManager;
 import ru.yandex.malakovich.tasktracker.manager.TaskManager;
 
 public class Managers {
-    private Managers() {}
+    private Managers() {
+    }
 
     public static TaskManager getDefault() {
         return new InMemoryTaskManager();
