@@ -179,19 +179,25 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         if (splitter >= 0) {
             for (String item : list.subList(1, splitter)) {
                 Task task = taskFromString(item);
-                allTasks.put(task.getId(), task);
+                if (task != null) {
+                    allTasks.put(task.getId(), task);
 
-                if (task instanceof Subtask) {
-                    Subtask subtask = (Subtask) task;
-                    manager.subtasks.put(task.getId(), subtask);
-                    subtasks.putIfAbsent(subtask.getEpicId(), new ArrayList<>());
-                    subtasks.get(subtask.getEpicId()).add(subtask.getId());
-                } else if (task instanceof Epic) {
-                    Epic epic = (Epic) task;
-                    if (subtasks.containsKey(epic.getId())) epic.getSubtasks().addAll(subtasks.get(epic.getId()));
-                    manager.epics.put(task.getId(), epic);
-                } else {
-                    manager.tasks.put(task.getId(), task);
+                    switch (task.getType()) {
+                        case SUBTASK:
+                            Subtask subtask = (Subtask) task;
+                            manager.subtasks.put(task.getId(), subtask);
+                            subtasks.putIfAbsent(subtask.getEpicId(), new ArrayList<>());
+                            subtasks.get(subtask.getEpicId()).add(subtask.getId());
+                            break;
+                        case EPIC:
+                            Epic epic = (Epic) task;
+                            if (subtasks.containsKey(epic.getId())) epic.getSubtasks().addAll(subtasks.get(epic.getId()));
+                            manager.epics.put(task.getId(), epic);
+                            break;
+                        case TASK:
+                            manager.tasks.put(task.getId(), task);
+                            break;
+                    }
                 }
             }
 
