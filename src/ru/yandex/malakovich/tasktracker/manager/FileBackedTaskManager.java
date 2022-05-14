@@ -9,11 +9,13 @@ import ru.yandex.malakovich.tasktracker.model.Task;
 import ru.yandex.malakovich.tasktracker.model.Type;
 import ru.yandex.malakovich.tasktracker.util.ArrayUtils;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,14 +23,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import static ru.yandex.malakovich.tasktracker.model.Status.DONE;
-import static ru.yandex.malakovich.tasktracker.model.Status.IN_PROGRESS;
 import static ru.yandex.malakovich.tasktracker.model.Status.NEW;
 import static ru.yandex.malakovich.tasktracker.model.Type.EPIC;
 import static ru.yandex.malakovich.tasktracker.model.Type.SUBTASK;
 import static ru.yandex.malakovich.tasktracker.model.Type.TASK;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
+    private final String HEADER = "id,type,name,status,description,epic";
     private final File file;
 
     private FileBackedTaskManager(File file) {
@@ -132,25 +133,32 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private void save() {
-        try (Writer fileWriter = new FileWriter(file)) {
-            List<Task> list = new ArrayList<>();
-            list.addAll(getSubtasks());
-            list.addAll(getTasks());
-            list.addAll(getEpics());
+        Path path = file.toPath();
+        if (Files.isWritable(path)) {
 
-            fileWriter.write("id,type,name,status,description,epic");
-            fileWriter.write(System.lineSeparator());
+            try (FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8, false);
+                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
+                List<Task> list = new ArrayList<>();
+                list.addAll(getSubtasks());
+                list.addAll(getTasks());
+                list.addAll(getEpics());
+                bufferedWriter.write(HEADER);
+                bufferedWriter.newLine();
 
-            for (Task task : list) {
-                fileWriter.write(taskToString(task));
-                fileWriter.write(System.lineSeparator());
+                for (Task task : list) {
+                    bufferedWriter.write(taskToString(task));
+                    bufferedWriter.newLine();
+                }
+
+                bufferedWriter.newLine();
+                bufferedWriter.write(historyManagerToString(historyManager));
+                bufferedWriter.newLine();
+                bufferedWriter.flush();
+
+            } catch (IOException exception) {
+                throw new ManagerSaveException(
+                        "Can't save to file: " + file.getAbsolutePath(), exception.getCause());
             }
-
-            fileWriter.write(System.lineSeparator());
-            fileWriter.write(historyManagerToString(historyManager));
-
-        } catch (IOException exception) {
-            throw new ManagerSaveException("Can't save to file: " + file.getName(), exception);
         }
     }
 
@@ -279,8 +287,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return task;
     }
 
-    public static void main(String[] args) {
-        FileBackedTaskManager manager = new FileBackedTaskManager(new File("taskManager.csv"));
+    public static void main(String[] args) throws IOException {
+        Path testFile = Files.createTempFile("taskManager", ".csv");
+        System.out.println("Test file: " + testFile);
+        FileBackedTaskManager manager = new FileBackedTaskManager(testFile.toFile());
 
         Task task1 = new Task("go to the supermarket", "buy groceries for the week", getId());
         manager.createTask(task1);
@@ -313,7 +323,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         System.out.println("History: " + manager.history());
 
         System.out.println("Load from file");
-        TaskManager managerFromFile = loadFromFile(Paths.get("taskManager.csv").toFile());
+        TaskManager managerFromFile = loadFromFile(testFile.toFile());
 
         System.out.println();
         System.out.println("Manager from file");
