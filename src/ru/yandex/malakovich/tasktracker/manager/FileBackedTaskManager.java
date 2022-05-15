@@ -285,6 +285,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 case TASK:
                     task = new Task(title, description, status, id);
                     break;
+                default:
+                    System.out.println("Unsupported task type: " + type);
             }
         }
 
