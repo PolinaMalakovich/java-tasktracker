@@ -295,6 +295,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public static void main(String[] args) throws IOException {
         Path testFile = Files.createTempFile("taskManager", ".csv");
+        testFile.toFile().deleteOnExit();
         System.out.println("Test file: " + testFile);
         FileBackedTaskManager manager = new FileBackedTaskManager(testFile.toFile());
 
