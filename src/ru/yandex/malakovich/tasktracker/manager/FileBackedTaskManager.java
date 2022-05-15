@@ -26,7 +26,7 @@ import static ru.yandex.malakovich.tasktracker.model.Status.NEW;
 import static ru.yandex.malakovich.tasktracker.model.Type.SUBTASK;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-    private final String HEADER = "id,type,name,status,description,epic";
+    private static final String HEADER = "id,type,name,status,description,epic";
     private final File file;
 
     private FileBackedTaskManager(File file) {
