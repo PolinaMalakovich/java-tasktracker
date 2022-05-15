@@ -60,6 +60,7 @@ public class Epic extends Task {
         return subtasks;
     }
 
+    @Override
     public Type getType() {
         return Type.EPIC;
     }
