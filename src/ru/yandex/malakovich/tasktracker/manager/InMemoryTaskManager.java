@@ -15,6 +15,7 @@ public class InMemoryTaskManager implements TaskManager {
     private static int id = 1;
     // Наставник Сергей Савельев сказал, что их нужно оставить protected,
     // смотри ответы в этом треде https://yandex-students.slack.com/archives/C03392E7N69/p1652367547922429
+    // также наставник сказал, что .idea и проектный .iml не нужны (см. тот же тред)
     protected final HashMap<Integer, Epic> epics = new HashMap<>();
     protected final HashMap<Integer, Task> tasks = new HashMap<>();
     protected final HashMap<Integer, Subtask> subtasks = new HashMap<>();

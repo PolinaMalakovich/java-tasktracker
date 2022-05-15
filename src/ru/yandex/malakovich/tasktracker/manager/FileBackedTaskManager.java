@@ -162,6 +162,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     // Наставник Сергей Савельев сказал сделать этот метод public,
     // смотри ответы в этом треде https://yandex-students.slack.com/archives/C03392E7N69/p1652367547922429
+    // также наставник сказал, что .idea и проектный .iml не нужны (см. тот же тред)
     public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager manager = new FileBackedTaskManager(file);
         Map<Integer, Task> allTasks = new HashMap<>();
