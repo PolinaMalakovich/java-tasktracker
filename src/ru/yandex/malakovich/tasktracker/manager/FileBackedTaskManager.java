@@ -27,6 +27,7 @@ import static ru.yandex.malakovich.tasktracker.model.Type.SUBTASK;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private static final String HEADER = "id,type,name,status,description,epic";
+    public static final int HEADER_INDEX = 0;
     private final File file;
 
     private FileBackedTaskManager(File file) {
@@ -171,43 +172,46 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             throw new ManagerLoadException("Can't read form file: " + file.getName(), exception);
         }
 
-        int splitter = list.lastIndexOf("");
+        if (!HEADER.equals(list.get(HEADER_INDEX))) {
+            throw new ManagerLoadException("Header mismatch");
+        }
 
-        if (splitter >= 0) {
-            for (String item : list.subList(1, splitter)) {
-                Task task = taskFromString(item);
-                if (task != null) {
-                    allTasks.put(task.getId(), task);
+        for (int i = 1; i < list.size(); i++) {
+            String item = list.get(i);
+            if (item.isBlank()) {
+                break;
+            }
+            Task task = taskFromString(item);
+            if (task != null) {
+                allTasks.put(task.getId(), task);
 
-                    switch (task.getType()) {
-                        case SUBTASK:
-                            Subtask subtask = (Subtask) task;
-                            manager.subtasks.put(task.getId(), subtask);
-                            subtasks.putIfAbsent(subtask.getEpicId(), new ArrayList<>());
-                            subtasks.get(subtask.getEpicId()).add(subtask.getId());
-                            break;
-                        case EPIC:
-                            Epic epic = (Epic) task;
-                            if (subtasks.containsKey(epic.getId()))
-                                epic.getSubtasks().addAll(subtasks.get(epic.getId()));
-                            manager.epics.put(task.getId(), epic);
-                            break;
-                        case TASK:
-                            manager.tasks.put(task.getId(), task);
-                            break;
-                    }
+                switch (task.getType()) {
+                    case SUBTASK:
+                        Subtask subtask = (Subtask) task;
+                        manager.subtasks.put(task.getId(), subtask);
+                        subtasks.putIfAbsent(subtask.getEpicId(), new ArrayList<>());
+                        subtasks.get(subtask.getEpicId()).add(subtask.getId());
+                        break;
+                    case EPIC:
+                        Epic epic = (Epic) task;
+                        if (subtasks.containsKey(epic.getId()))
+                            epic.getSubtasks().addAll(subtasks.get(epic.getId()));
+                        manager.epics.put(task.getId(), epic);
+                        break;
+                    case TASK:
+                        manager.tasks.put(task.getId(), task);
+                        break;
+                    default:
+                        System.out.println("Unsupported task type: " + task.getType());
                 }
             }
+        }
 
-            String history = list.get(list.size() - 1);
-            List<Integer> ids = historyManagerFromString(history);
+        String history = list.get(list.size() - 1);
+        List<Integer> ids = historyManagerFromString(history);
 
-            for (Integer id : ids) {
-                manager.historyManager.add(allTasks.get(id));
-            }
-
-        } else {
-            throw new ManagerLoadException("Can't read form file: " + file.getName());
+        for (Integer id : ids) {
+            manager.historyManager.add(allTasks.get(id));
         }
 
         return manager;
@@ -265,7 +269,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             String[] values = value.split(",");
             ArrayUtils.trimElements(values);
 
-            int id = Integer.parseInt(values[0]);
+            int id = Integer.parseInt(values[HEADER_INDEX]);
             Type type = Type.valueOf(values[1]);
             String title = values[2];
             Status status = Status.valueOf(values[3]);
