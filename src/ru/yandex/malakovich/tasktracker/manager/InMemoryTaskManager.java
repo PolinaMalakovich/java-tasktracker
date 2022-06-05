@@ -126,13 +126,17 @@ public class InMemoryTaskManager implements TaskManager {
     public void createSubtask(Subtask subtask) {
         if (subtask != null) {
             Epic oldEpic = getEpicById(subtask.getEpicId());
-            if (oldEpic != null) {
-                subtasks.put(subtask.getId(), subtask);
-                Set<Subtask> newSubtasks = new HashSet<>(getEpicSubtasks(oldEpic));
-                newSubtasks.add(subtask);
-                Epic epic = Epic.create(oldEpic.getTitle(), oldEpic.getDescription(), newSubtasks, oldEpic.getId());
-                epics.replace(epic.getId(), epic);
-            }
+            createSubtaskWorker(oldEpic, subtask);
+        }
+    }
+
+    protected void createSubtaskWorker(Epic oldEpic, Subtask subtask) {
+        if (oldEpic != null) {
+            subtasks.put(subtask.getId(), subtask);
+            Set<Subtask> newSubtasks = new HashSet<>(getEpicSubtasks(oldEpic));
+            newSubtasks.add(subtask);
+            Epic epic = Epic.create(oldEpic.getTitle(), oldEpic.getDescription(), newSubtasks, oldEpic.getId());
+            epics.replace(epic.getId(), epic);
         }
     }
 

@@ -26,11 +26,11 @@ import static ru.yandex.malakovich.tasktracker.model.Status.NEW;
 import static ru.yandex.malakovich.tasktracker.model.Type.SUBTASK;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-    private static final String HEADER = "id,type,name,status,description,epic";
+    public static final String HEADER = "id,type,name,status,description,epic";
     public static final int HEADER_INDEX = 0;
     private final File file;
 
-    private FileBackedTaskManager(File file) {
+    public FileBackedTaskManager(File file) {
         this.file = file;
     }
 
@@ -90,8 +90,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public void createSubtask(Subtask subtask) {
-        super.createSubtask(subtask);
-        save();
+        if (subtask != null && epics.containsKey(subtask.getEpicId())) {
+            Epic epic = epics.get(subtask.getEpicId());
+            super.createSubtaskWorker(epic, subtask);
+            save();
+        }
     }
 
     @Override
@@ -175,6 +178,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             throw new ManagerLoadException("Can't read form file: " + file.getName(), exception);
         }
 
+        if (list.isEmpty()) {
+            return manager;
+        }
+
         if (!HEADER.equals(list.get(HEADER_INDEX))) {
             throw new ManagerLoadException("Header mismatch");
         }
@@ -210,11 +217,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
         }
 
-        String history = list.get(list.size() - 1);
-        List<Integer> ids = historyManagerFromString(history);
+        if (list.size() > 1) {
+            String history = list.get(list.size() - 1);
+            List<Integer> ids = historyManagerFromString(history);
 
-        for (Integer id : ids) {
-            manager.historyManager.add(allTasks.get(id));
+            for (Integer id : ids) {
+                manager.historyManager.add(allTasks.get(id));
+            }
         }
 
         return manager;
@@ -239,7 +248,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private static List<Integer> historyManagerFromString(String value) {
         List<Integer> list = new ArrayList<>();
 
-        if (value != null) {
+        if (value != null && !value.isBlank()) {
             String[] values = value.split(",");
             ArrayUtils.trimElements(values);
 
@@ -265,7 +274,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 + task.getDescription() + "," + epicId;
     }
 
-    static private Task taskFromString(String value) {
+    private static Task taskFromString(String value) {
         Task task = null;
 
         if (value != null) {
@@ -294,54 +303,5 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
 
         return task;
-    }
-
-    public static void main(String[] args) throws IOException {
-        Path testFile = Files.createTempFile("taskManager", ".csv");
-        testFile.toFile().deleteOnExit();
-        System.out.println("Test file: " + testFile);
-        FileBackedTaskManager manager = new FileBackedTaskManager(testFile.toFile());
-
-        Task task1 = new Task("go to the supermarket", "buy groceries for the week", getId());
-        manager.createTask(task1);
-
-        Task task2 = new Task("teach the dog a new trick", "fetch", getId());
-        manager.createTask(task2);
-
-        Epic epic1 = Epic.create("prepare for the birthday party", "see subtasks", new HashSet<>(), getId());
-        manager.createEpic(epic1);
-
-        Epic epic2 = Epic.create("complete The Last of Us II", "get all the trophies", new HashSet<>(), getId());
-        manager.createEpic(epic2);
-
-        Subtask subtask1 = new Subtask("order a birthday cake", "call the bakery", NEW, epic1.getId(), getId());
-        manager.createSubtask(subtask1);
-
-        Subtask subtask2 = new Subtask("put up decorations", "blow up balloons", NEW, epic1.getId(), getId());
-        manager.createSubtask(subtask2);
-
-        manager.getTaskById(task2.getId());
-        manager.getEpicById(epic1.getId());
-        manager.getSubtaskById(subtask1.getId());
-
-        System.out.println("First manager");
-        System.out.println();
-        System.out.println("Epics: " + manager.getEpics());
-        System.out.println("Tasks: " + manager.getTasks());
-        System.out.println("Subtasks: " + manager.getSubtasks());
-        System.out.println();
-        System.out.println("History: " + manager.history());
-
-        System.out.println("Load from file");
-        TaskManager managerFromFile = loadFromFile(testFile.toFile());
-
-        System.out.println();
-        System.out.println("Manager from file");
-        System.out.println();
-        System.out.println("Epics: " + managerFromFile.getEpics());
-        System.out.println("Tasks: " + managerFromFile.getTasks());
-        System.out.println("Subtasks: " + managerFromFile.getSubtasks());
-        System.out.println();
-        System.out.println("History: " + managerFromFile.history());
     }
 }
