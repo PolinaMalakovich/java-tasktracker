@@ -16,17 +16,18 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import static ru.yandex.malakovich.tasktracker.model.Status.NEW;
 import static ru.yandex.malakovich.tasktracker.model.Type.SUBTASK;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-    public static final String HEADER = "id,type,name,status,description,epic";
+    public static final String HEADER = "id,type,name,status,description,duration,start,epic";
     public static final int HEADER_INDEX = 0;
     private final File file;
 
@@ -271,7 +272,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
 
         return task.getId() + "," + task.getType() + "," + task.getTitle() + "," + task.getStatus() + ","
-                + task.getDescription() + "," + epicId;
+                + task.getDescription() + "," + task.getDuration() + "," + task.getStartTime() + "," + epicId;
     }
 
     private static Task taskFromString(String value) {
@@ -286,16 +287,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             String title = values[2];
             Status status = Status.valueOf(values[3]);
             String description = values[4];
+            Duration duration = Duration.parse(values[5]);
+            LocalDateTime startTime = LocalDateTime.parse(values[6]);
 
             switch (type) {
                 case SUBTASK:
-                    task = new Subtask(title, description, status, Integer.parseInt(values[5]), id);
+                    task = new Subtask(title, description, status, Integer.parseInt(values[7]), id, duration, startTime);
                     break;
                 case EPIC:
                     task = Epic.create(title, description, new HashSet<>(), id);
                     break;
                 case TASK:
-                    task = new Task(title, description, status, id);
+                    task = new Task(title, description, status, id, duration, startTime);
                     break;
                 default:
                     System.out.println("Unsupported task type: " + type);

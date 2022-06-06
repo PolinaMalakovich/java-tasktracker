@@ -1,15 +1,26 @@
 package ru.yandex.malakovich.tasktracker.model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 public class Epic extends Task {
     private final Set<Integer> subtasks;
+    private final LocalDateTime endTime;
 
-    private Epic(String title, String description, Status status, Set<Integer> subtasks, int id) {
-        super(title, description, status, id);
+    private Epic(String title,
+                 String description,
+                 Status status,
+                 Set<Integer> subtasks,
+                 int id,
+                 Duration duration,
+                 LocalDateTime startTime,
+                 LocalDateTime endTime) {
+        super(title, description, status, id, duration, startTime);
         this.subtasks = subtasks;
+        this.endTime = endTime;
     }
 
     public static Epic create(String title, String description, Set<Subtask> subtasks, int id) {
@@ -18,13 +29,16 @@ public class Epic extends Task {
         Objects.requireNonNull(subtasks);
 
         Status status = getStatus(subtasks);
+        Duration duration = getDuration(subtasks);
+        LocalDateTime startTime = getStartTime(subtasks);
+        LocalDateTime endTime = getEndTime(subtasks);
 
         Set<Integer> subtasksIds = new HashSet<>();
         for (Subtask s : subtasks) {
             subtasksIds.add(s.getId());
         }
 
-        return new Epic(title, description, status, subtasksIds, id);
+        return new Epic(title, description, status, subtasksIds, id, duration, startTime, endTime);
     }
 
     private static Status getStatus(Set<Subtask> subtasks) {
@@ -54,6 +68,33 @@ public class Epic extends Task {
         }
 
         return status;
+    }
+
+    private static Duration getDuration(Set<Subtask> subtasks) {
+        return Duration.between(getStartTime(subtasks), getEndTime(subtasks));
+    }
+
+    private static LocalDateTime getStartTime(Set<Subtask> subtasks) {
+        LocalDateTime localDateTime = LocalDateTime.MAX;
+
+        for (Subtask subtask : subtasks) {
+            if (subtask.getStartTime().isBefore(localDateTime)) {
+                localDateTime = subtask.getStartTime();
+            }
+        }
+        return localDateTime;
+    }
+
+    private static LocalDateTime getEndTime(Set<Subtask> subtasks) {
+        LocalDateTime localDateTime = LocalDateTime.MIN;
+
+        for (Subtask subtask : subtasks) {
+            if (subtask.getEndTime().isAfter(localDateTime)) {
+                localDateTime = subtask.getEndTime();
+            }
+        }
+
+        return localDateTime;
     }
 
     public Set<Integer> getSubtasks() {

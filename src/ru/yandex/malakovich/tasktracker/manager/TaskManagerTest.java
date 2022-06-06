@@ -3,12 +3,10 @@ package ru.yandex.malakovich.tasktracker.manager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.malakovich.tasktracker.model.Epic;
-import ru.yandex.malakovich.tasktracker.model.Status;
 import ru.yandex.malakovich.tasktracker.model.Subtask;
 import ru.yandex.malakovich.tasktracker.model.Task;
 import ru.yandex.malakovich.tasktracker.util.TestUtils;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -200,7 +198,9 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Task task = new Task(oldTask.getTitle(),
                 "new task description",
                 oldTask.getStatus(),
-                oldTask.getId());
+                oldTask.getId(),
+                oldTask.getDuration(),
+                oldTask.getStartTime());
         taskManager.updateTask(task);
 
         assertEquals(task, taskManager.getTaskById(task.getId()));
@@ -222,7 +222,9 @@ abstract class TaskManagerTest<T extends TaskManager> {
                 "new subtask description",
                 oldSubtask.getStatus(),
                 oldSubtask.getEpicId(),
-                oldSubtask.getId());
+                oldSubtask.getId(),
+                oldSubtask.getDuration(),
+                oldSubtask.getStartTime());
         taskManager.updateSubtask(subtask);
 
         assertEquals(subtask, taskManager.getSubtaskById(subtask.getId()));

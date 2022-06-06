@@ -1,12 +1,14 @@
 package ru.yandex.malakovich.tasktracker.model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Subtask extends Task {
     private final int epicId;
 
-    public Subtask(String title, String description, Status status, int epicId, int id) {
-        super(title, description, status, id);
+    public Subtask(String title, String description, Status status, int epicId, int id, Duration duration, LocalDateTime startTime) {
+        super(title, description, status, id, duration, startTime);
         this.epicId = epicId;
     }
 

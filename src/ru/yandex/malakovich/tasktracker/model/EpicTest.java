@@ -6,6 +6,8 @@ import ru.yandex.malakovich.tasktracker.manager.InMemoryTaskManager;
 import ru.yandex.malakovich.tasktracker.manager.TaskManager;
 import ru.yandex.malakovich.tasktracker.util.Managers;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -61,12 +63,22 @@ class EpicTest {
         assertEquals(Status.IN_PROGRESS, manager.getEpicById(epic.getId()).getStatus());
     }
 
-    private void createTestSubtask(Status status, String number) {
+    private void createTestSubtask(Status status, String number, Duration duration, LocalDateTime startTime) {
         Subtask subtask = new Subtask("subtask title " + number,
                 "subtask description " + number,
                 status,
                 epic.getId(),
-                InMemoryTaskManager.getId());
+                InMemoryTaskManager.getId(),
+                duration,
+                startTime);
         manager.createSubtask(subtask);
+    }
+
+    private void createTestSubtask(Status status, String number) {
+        createTestSubtask(status, number, Duration.ZERO, null);
+    }
+
+    private void createTestSubtask(String number, Duration duration, LocalDateTime startTime) {
+        createTestSubtask(Status.NEW, number, duration, startTime);
     }
 }

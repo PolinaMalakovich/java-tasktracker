@@ -6,6 +6,7 @@ import ru.yandex.malakovich.tasktracker.model.Status;
 import ru.yandex.malakovich.tasktracker.model.Subtask;
 import ru.yandex.malakovich.tasktracker.model.Task;
 
+import java.time.Duration;
 import java.util.HashSet;
 
 public class TestUtils {
@@ -19,7 +20,9 @@ public class TestUtils {
     public static Task createTestTask(String number) {
         return new Task("task title " + number,
                 "task description " + number,
-                InMemoryTaskManager.getId());
+                InMemoryTaskManager.getId(),
+                Duration.ZERO,
+                null);
     }
 
     public static Subtask createTestSubtask(String number, int epicId) {
@@ -27,6 +30,8 @@ public class TestUtils {
                 "subtask description " + number,
                 Status.NEW,
                 epicId,
-                InMemoryTaskManager.getId());
+                InMemoryTaskManager.getId(),
+                Duration.ZERO,
+                null);
     }
 }
