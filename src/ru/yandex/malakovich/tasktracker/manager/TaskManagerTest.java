@@ -7,6 +7,8 @@ import ru.yandex.malakovich.tasktracker.model.Subtask;
 import ru.yandex.malakovich.tasktracker.model.Task;
 import ru.yandex.malakovich.tasktracker.util.TestUtils;
 
+import java.time.Duration;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -24,11 +26,13 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void getEpicsNotEmpty() {
-        Epic epic1 = createTestEpic("one");
-        Epic epic2 = createTestEpic("two");
+        Epic epic1 = createTestEpicAndAddToManager("one");
+        Epic epic2 = createTestEpicAndAddToManager("two");
         List<Epic> epics = List.of(epic1, epic2);
 
-        assertEquals(epics, taskManager.getEpics());
+        List<Epic> actual = taskManager.getEpics();
+        actual.sort(Comparator.comparing(Task::getId));
+        assertEquals(epics, actual);
     }
 
     @Test
@@ -38,8 +42,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void getTasksNotEmpty() {
-        Task task1 = createTestTask("one");
-        Task task2 = createTestTask("two");
+        Task task1 = createTestTaskAndAddToManager("one");
+        Task task2 = createTestTaskAndAddToManager("two");
         List<Task> tasks = List.of(task1, task2);
 
         assertEquals(tasks, taskManager.getTasks());
@@ -52,9 +56,9 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void getSubtasksNotEmpty() {
-        Epic epic = createTestEpic("one");
-        Subtask subtask1 = createTestSubtask("one", epic.getId());
-        Subtask subtask2 = createTestSubtask("two", epic.getId());
+        Epic epic = createTestEpicAndAddToManager("one");
+        Subtask subtask1 = createTestSubtaskAndAddToManager("one", epic.getId());
+        Subtask subtask2 = createTestSubtaskAndAddToManager("two", epic.getId());
         List<Subtask> subtasks = List.of(subtask1, subtask2);
 
         assertEquals(subtasks, taskManager.getSubtasks());
@@ -67,12 +71,12 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void deleteAllEpics() {
-        Epic epic1 = createTestEpic("one");
-        Epic epic2 = createTestEpic("two");
-        createTestSubtask("one", epic1.getId());
-        createTestSubtask("two", epic1.getId());
-        createTestSubtask("three", epic2.getId());
-        createTestSubtask("four", epic2.getId());
+        Epic epic1 = createTestEpicAndAddToManager("one");
+        Epic epic2 = createTestEpicAndAddToManager("two");
+        createTestSubtaskAndAddToManager("one", epic1.getId());
+        createTestSubtaskAndAddToManager("two", epic1.getId());
+        createTestSubtaskAndAddToManager("three", epic2.getId());
+        createTestSubtaskAndAddToManager("four", epic2.getId());
 
         taskManager.deleteAllEpics();
         assertTrue(taskManager.getEpics().isEmpty());
@@ -81,8 +85,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void deleteAllTasks() {
-        createTestTask("one");
-        createTestTask("two");
+        createTestTaskAndAddToManager("one");
+        createTestTaskAndAddToManager("two");
 
         taskManager.deleteAllTasks();
         assertTrue(taskManager.getTasks().isEmpty());
@@ -90,9 +94,9 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void deleteAllSubtasks() {
-        Epic epic = createTestEpic("one");
-        createTestSubtask("one", epic.getId());
-        createTestSubtask("two", epic.getId());
+        Epic epic = createTestEpicAndAddToManager("one");
+        createTestSubtaskAndAddToManager("one", epic.getId());
+        createTestSubtaskAndAddToManager("two", epic.getId());
 
         taskManager.deleteAllSubtasks();
         assertTrue(taskManager.getSubtasks().isEmpty());
@@ -100,7 +104,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void getEpicById() {
-        Epic epic = createTestEpic("one");
+        Epic epic = createTestEpicAndAddToManager("one");
         Epic epicFromManager = taskManager.getEpicById(epic.getId());
         assertNotNull(epicFromManager);
         assertEquals(epic, epicFromManager);
@@ -113,7 +117,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void getTaskById() {
-        Task task = createTestTask("one");
+        Task task = createTestTaskAndAddToManager("one");
         Task taskFromManager = taskManager.getTaskById(task.getId());
         assertNotNull(taskFromManager);
         assertEquals(task, taskFromManager);
@@ -126,8 +130,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void getSubtaskById() {
-        Epic epic = createTestEpic("one");
-        Subtask subtask = createTestSubtask("one", epic.getId());
+        Epic epic = createTestEpicAndAddToManager("one");
+        Subtask subtask = createTestSubtaskAndAddToManager("one", epic.getId());
         Subtask subtaskFromManager = taskManager.getSubtaskById(subtask.getId());
         assertNotNull(subtaskFromManager);
         assertEquals(subtask, subtaskFromManager);
@@ -140,7 +144,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void createEpic() {
-        Epic epic = createTestEpic("one");
+        Epic epic = createTestEpicAndAddToManager("one");
         assertNotNull(taskManager.getEpicById(epic.getId()));
     }
 
@@ -151,7 +155,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void createTask() {
-        Task task = createTestTask("one");
+        Task task = createTestTaskAndAddToManager("one");
         assertNotNull(taskManager.getTaskById(task.getId()));
     }
 
@@ -162,8 +166,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void createSubtask() {
-        Epic epic = createTestEpic("one");
-        Subtask subtask = createTestSubtask("one", epic.getId());
+        Epic epic = createTestEpicAndAddToManager("one");
+        Subtask subtask = createTestSubtaskAndAddToManager("one", epic.getId());
         assertNotNull(taskManager.getSubtaskById(subtask.getId()));
     }
 
@@ -174,7 +178,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void updateEpic() {
-        Epic oldEpic = createTestEpic("one");
+        Epic oldEpic = createTestEpicAndAddToManager("one");
         Epic epic = Epic.create(oldEpic.getTitle(),
                 "new epic description",
                 taskManager.getEpicSubtasks(oldEpic),
@@ -186,15 +190,12 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void updateEpicWithNull() {
-        Epic epic = createTestEpic("one");
-
         assertDoesNotThrow(() -> taskManager.updateEpic(null));
-        assertNotNull(taskManager.getEpicById(epic.getId()));
     }
 
     @Test
     void updateTask() {
-        Task oldTask = createTestTask("one");
+        Task oldTask = createTestTaskAndAddToManager("one");
         Task task = new Task(oldTask.getTitle(),
                 "new task description",
                 oldTask.getStatus(),
@@ -208,16 +209,13 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void updateTaskWithNull() {
-        Task task = createTestTask("one");
-
         assertDoesNotThrow(() -> taskManager.updateTask(null));
-        assertNotNull(taskManager.getTaskById(task.getId()));
     }
 
     @Test
     void updateSubtask() {
-        Epic oldEpic = createTestEpic("one");
-        Subtask oldSubtask = createTestSubtask("one", oldEpic.getId());
+        Epic oldEpic = createTestEpicAndAddToManager("one");
+        Subtask oldSubtask = createTestSubtaskAndAddToManager("one", oldEpic.getId());
         Subtask subtask = new Subtask(oldSubtask.getTitle(),
                 "new subtask description",
                 oldSubtask.getStatus(),
@@ -232,17 +230,13 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void updateSubtaskWithNull() {
-        Epic epic = createTestEpic("one");
-        Subtask subtask = createTestSubtask("one", epic.getId());
-
         assertDoesNotThrow(() -> taskManager.updateSubtask(null));
-        assertNotNull(taskManager.getSubtaskById(subtask.getId()));
     }
 
     @Test
     void deleteEpicById() {
-        Epic epic = createTestEpic("one");
-        Subtask subtask = createTestSubtask("one", epic.getId());
+        Epic epic = createTestEpicAndAddToManager("one");
+        Subtask subtask = createTestSubtaskAndAddToManager("one", epic.getId());
         taskManager.deleteEpicById(epic.getId());
 
         assertNull(taskManager.getEpicById(epic.getId()));
@@ -256,7 +250,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void deleteTaskById() {
-        Task task = createTestTask("one");
+        Task task = createTestTaskAndAddToManager("one");
         taskManager.deleteTaskById(task.getId());
 
         assertNull(taskManager.getTaskById(task.getId()));
@@ -269,8 +263,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void deleteSubtaskById() {
-        Epic epic = createTestEpic("one");
-        Subtask subtask = createTestSubtask("one", epic.getId());
+        Epic epic = createTestEpicAndAddToManager("one");
+        Subtask subtask = createTestSubtaskAndAddToManager("one", epic.getId());
         taskManager.deleteSubtaskById(subtask.getId());
 
         assertNull(taskManager.getSubtaskById(subtask.getId()));
@@ -283,9 +277,9 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void getEpicSubtasksNotEmpty() {
-        Epic epic = createTestEpic("one");
-        Subtask subtask1 = createTestSubtask("one", epic.getId());
-        Subtask subtask2 = createTestSubtask("two", epic.getId());
+        Epic epic = createTestEpicAndAddToManager("one");
+        Subtask subtask1 = createTestSubtaskAndAddToManager("one", epic.getId());
+        Subtask subtask2 = createTestSubtaskAndAddToManager("two", epic.getId());
         Set<Subtask> subtasks = Set.of(subtask1, subtask2);
 
         assertEquals(subtasks, taskManager.getEpicSubtasks(taskManager.getEpicById(epic.getId())));
@@ -293,7 +287,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void getEpicSubtasksEmpty() {
-        Epic epic = createTestEpic("one");
+        Epic epic = createTestEpicAndAddToManager("one");
 
         assertTrue(taskManager.getEpicSubtasks(epic).isEmpty());
     }
@@ -305,14 +299,14 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void history() {
-        Epic epic1 = createTestEpic("one");
-        createTestEpic("one");
+        Epic epic1 = createTestEpicAndAddToManager("one");
+        createTestEpicAndAddToManager("one");
 
-        Subtask subtask1 = createTestSubtask("one", epic1.getId());
-        createTestSubtask("two", epic1.getId());
+        Subtask subtask1 = createTestSubtaskAndAddToManager("one", epic1.getId());
+        createTestSubtaskAndAddToManager("two", epic1.getId());
 
-        Task task1 = createTestTask("one");
-        createTestTask("two");
+        Task task1 = createTestTaskAndAddToManager("one");
+        createTestTaskAndAddToManager("two");
 
         Epic epic = taskManager.getEpicById(epic1.getId());
         taskManager.getSubtaskById(subtask1.getId());
@@ -322,19 +316,30 @@ abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(taskList, taskManager.history());
     }
 
-    protected Epic createTestEpic(String number) {
+    @Test
+    void validateTimeWithNull() {
+        Task task = new Task("task title",
+                "task description",
+                InMemoryTaskManager.getId(),
+                Duration.ZERO,
+                null);
+
+        assertDoesNotThrow(() -> taskManager.createTask(task));
+    }
+
+    protected Epic createTestEpicAndAddToManager(String number) {
         Epic epic = TestUtils.createTestEpic(number);
         taskManager.createEpic(epic);
         return epic;
     }
 
-    protected Task createTestTask(String number) {
+    protected Task createTestTaskAndAddToManager(String number) {
         Task task = TestUtils.createTestTask(number);
         taskManager.createTask(task);
         return task;
     }
 
-    protected Subtask createTestSubtask(String number, int epicId) {
+    protected Subtask createTestSubtaskAndAddToManager(String number, int epicId) {
         Subtask subtask = TestUtils.createTestSubtask(number, epicId);
         taskManager.createSubtask(subtask);
         return subtask;

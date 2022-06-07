@@ -1,5 +1,7 @@
 package ru.yandex.malakovich.tasktracker.model;
 
+import ru.yandex.malakovich.tasktracker.util.DateTimeUtils;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -71,27 +73,26 @@ public class Epic extends Task {
     }
 
     private static Duration getDuration(Set<Subtask> subtasks) {
-        return Duration.between(getStartTime(subtasks), getEndTime(subtasks));
+        LocalDateTime startTime = getStartTime(subtasks);
+        LocalDateTime endTime = getEndTime(subtasks);
+        return startTime == null || endTime == null ? null : Duration.between(startTime, endTime);
     }
 
     private static LocalDateTime getStartTime(Set<Subtask> subtasks) {
-        LocalDateTime localDateTime = LocalDateTime.MAX;
+        LocalDateTime localDateTime = null;
 
         for (Subtask subtask : subtasks) {
-            if (subtask.getStartTime().isBefore(localDateTime)) {
-                localDateTime = subtask.getStartTime();
-            }
+            localDateTime = DateTimeUtils.minDate(localDateTime, subtask.getStartTime());
         }
+
         return localDateTime;
     }
 
     private static LocalDateTime getEndTime(Set<Subtask> subtasks) {
-        LocalDateTime localDateTime = LocalDateTime.MIN;
+        LocalDateTime localDateTime = null;
 
         for (Subtask subtask : subtasks) {
-            if (subtask.getEndTime().isAfter(localDateTime)) {
-                localDateTime = subtask.getEndTime();
-            }
+            localDateTime = DateTimeUtils.maxDate(localDateTime, subtask.getEndTime());
         }
 
         return localDateTime;

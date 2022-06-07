@@ -26,9 +26,9 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
 
     @Test
     void loadFromFile() {
-        Epic epic = createTestEpic("one");
-        Task task = createTestTask("one");
-        Subtask subtask = createTestSubtask("one", epic.getId());
+        Epic epic = createTestEpicAndAddToManager("one");
+        Task task = createTestTaskAndAddToManager("one");
+        Subtask subtask = createTestSubtaskAndAddToManager("one", epic.getId());
 
         taskManager.getEpicById(epic.getId());
         taskManager.getTaskById(task.getId());
@@ -49,8 +49,8 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
 
     @Test
     void loadFromFileWhenEpicHasNoSubtasks() {
-        Epic epic = createTestEpic("one");
-        Task task = createTestTask("one");
+        Epic epic = createTestEpicAndAddToManager("one");
+        Task task = createTestTaskAndAddToManager("one");
 
         taskManager.getEpicById(epic.getId());
         taskManager.getTaskById(task.getId());
@@ -62,9 +62,9 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
 
     @Test
     void loadFromFileWhenHistoryIsEmpty() {
-        Epic epic = createTestEpic("one");
-        createTestTask("one");
-        createTestSubtask("one", epic.getId());
+        Epic epic = createTestEpicAndAddToManager("one");
+        createTestTaskAndAddToManager("one");
+        createTestSubtaskAndAddToManager("one", epic.getId());
 
         TaskManager managerFromFile = FileBackedTaskManager.loadFromFile(file);
 

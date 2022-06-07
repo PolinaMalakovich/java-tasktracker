@@ -287,8 +287,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             String title = values[2];
             Status status = Status.valueOf(values[3]);
             String description = values[4];
-            Duration duration = Duration.parse(values[5]);
-            LocalDateTime startTime = LocalDateTime.parse(values[6]);
+            Duration duration = values[5].equals("null") ? null : Duration.parse(values[5]);
+            LocalDateTime startTime = values[6].equals("null") ? null : LocalDateTime.parse(values[6]);
 
             switch (type) {
                 case SUBTASK:
