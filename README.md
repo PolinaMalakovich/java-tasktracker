@@ -1,2 +1,2 @@
-# java-sprint5-hw
+# java-sprint6-hw
 Fifth sprint homework
