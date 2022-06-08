@@ -10,7 +10,6 @@ import java.util.Set;
 
 public class Epic extends Task {
     private final Set<Integer> subtasks;
-    private final LocalDateTime endTime;
 
     private Epic(String title,
                  String description,
@@ -18,11 +17,40 @@ public class Epic extends Task {
                  Set<Integer> subtasks,
                  int id,
                  Duration duration,
-                 LocalDateTime startTime,
-                 LocalDateTime endTime) {
+                 LocalDateTime startTime) {
         super(title, description, status, id, duration, startTime);
         this.subtasks = subtasks;
-        this.endTime = endTime;
+    }
+
+    public Set<Integer> getSubtasks() {
+        return subtasks;
+    }
+
+    @Override
+    public Type getType() {
+        return Type.EPIC;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Epic epic = (Epic) o;
+        return Objects.equals(getSubtasks(), epic.getSubtasks());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getSubtasks());
+    }
+
+    @Override
+    public String toString() {
+        return "Epic{" +
+                "subtasks=" + subtasks +
+                ", " + toStringHelper() +
+                "}";
     }
 
     public static Epic create(String title, String description, Set<Subtask> subtasks, int id) {
@@ -33,14 +61,13 @@ public class Epic extends Task {
         Status status = getStatus(subtasks);
         Duration duration = getDuration(subtasks);
         LocalDateTime startTime = getStartTime(subtasks);
-        LocalDateTime endTime = getEndTime(subtasks);
 
         Set<Integer> subtasksIds = new HashSet<>();
         for (Subtask s : subtasks) {
             subtasksIds.add(s.getId());
         }
 
-        return new Epic(title, description, status, subtasksIds, id, duration, startTime, endTime);
+        return new Epic(title, description, status, subtasksIds, id, duration, startTime);
     }
 
     private static Status getStatus(Set<Subtask> subtasks) {
@@ -96,36 +123,5 @@ public class Epic extends Task {
         }
 
         return localDateTime;
-    }
-
-    public Set<Integer> getSubtasks() {
-        return subtasks;
-    }
-
-    @Override
-    public Type getType() {
-        return Type.EPIC;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Epic epic = (Epic) o;
-        return Objects.equals(getSubtasks(), epic.getSubtasks());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getSubtasks());
-    }
-
-    @Override
-    public String toString() {
-        return "Epic{" +
-                "subtasks=" + subtasks +
-                ", " + toStringHelper() +
-                "}";
     }
 }

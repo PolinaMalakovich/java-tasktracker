@@ -28,6 +28,12 @@ public interface TaskManager {
     List<Subtask> getSubtasks();
 
     /**
+     * Returns a list of tasks sorted by their start time.
+     * @return a list of tasks sorted by their start time
+     */
+    List<Task> getPrioritizedTasksList();
+
+    /**
      * Removes all the mappings from the epics map and the subtasks map.
      */
     void deleteAllEpics();

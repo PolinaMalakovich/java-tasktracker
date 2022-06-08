@@ -1,26 +1,33 @@
 package ru.yandex.malakovich.tasktracker.util;
 
+import ru.yandex.malakovich.tasktracker.exception.InvalidStartTimeException;
 import ru.yandex.malakovich.tasktracker.model.Task;
 
 import java.time.LocalDateTime;
-import java.util.TreeSet;
+import java.util.Set;
 
 public class ManagerUtils {
-    public static boolean validateTime(Task candidate, TreeSet<Task> prioritizedTasks) {
-        boolean isValid = true;
-        LocalDateTime lastEndTime = null;
+    public static void validateTime(Task candidate, Set<Task> prioritizedTasks) {
+        boolean isValid = prioritizedTasks.isEmpty();
+        Task previous = null;
 
         for (Task task : prioritizedTasks) {
             if (candidate.getId() != task.getId()) {
                 if (isBeforeInclusive(candidate.getStartTime(), task.getStartTime())) {
-                    isValid = validateTime(lastEndTime, task.getStartTime(), candidate);
+                    LocalDateTime time = previous == null ? null : previous.getEndTime();
+                    isValid = validateTime(time, task.getStartTime(), candidate);
                     break;
                 }
-                lastEndTime = task.getEndTime();
+
+                previous = task;
+            } else {
+                isValid = true;
             }
         }
 
-        return isValid;
+        if (!isValid) {
+            throw new InvalidStartTimeException(previous, candidate);
+        }
     }
 
     public static boolean validateTime(LocalDateTime left, LocalDateTime right, Task task) {

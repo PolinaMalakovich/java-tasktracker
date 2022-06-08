@@ -1,16 +1,20 @@
 package ru.yandex.malakovich.tasktracker.manager;
 
 import ru.yandex.malakovich.tasktracker.model.Epic;
+import ru.yandex.malakovich.tasktracker.model.Status;
 import ru.yandex.malakovich.tasktracker.model.Subtask;
 import ru.yandex.malakovich.tasktracker.model.Task;
 import ru.yandex.malakovich.tasktracker.util.ManagerUtils;
 import ru.yandex.malakovich.tasktracker.util.Managers;
 import ru.yandex.malakovich.tasktracker.util.TaskUtils;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -19,11 +23,11 @@ public class InMemoryTaskManager implements TaskManager {
     // Наставник Сергей Савельев сказал, что их нужно оставить protected,
     // смотри ответы в этом треде https://yandex-students.slack.com/archives/C03392E7N69/p1652367547922429
     // также наставник сказал, что .idea и проектный .iml не нужны (см. тот же тред)
-    protected final HashMap<Integer, Epic> epics = new HashMap<>();
-    protected final HashMap<Integer, Task> tasks = new HashMap<>();
-    protected final HashMap<Integer, Subtask> subtasks = new HashMap<>();
+    protected final Map<Integer, Epic> epics = new HashMap<>();
+    protected final Map<Integer, Task> tasks = new HashMap<>();
+    protected final Map<Integer, Subtask> subtasks = new HashMap<>();
     protected final HistoryManager historyManager = Managers.getDefaultHistory();
-    protected final TreeSet<Task> prioritizedTasks = new TreeSet<>(TaskUtils.START_TIME_TASK_COMPARATOR);
+    protected final Set<Task> prioritizedTasks = new TreeSet<>(TaskUtils.START_TIME_TASK_COMPARATOR);
 
     @Override
     public List<Epic> getEpics() {
@@ -40,7 +44,8 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(subtasks.values());
     }
 
-    public ArrayList<Task> getPrioritizedTasksList() {
+    @Override
+    public List<Task> getPrioritizedTasksList() {
         return new ArrayList<>(prioritizedTasks);
     }
 
@@ -61,6 +66,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteAllTasks() {
         for (Task task : tasks.values()) {
             historyManager.remove(task);
+            prioritizedTasks.remove(task);
         }
         tasks.clear();
     }
@@ -69,6 +75,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteAllSubtasks() {
         for (Subtask subtask : subtasks.values()) {
             historyManager.remove(subtask);
+            prioritizedTasks.remove(subtask);
         }
         subtasks.clear();
     }
@@ -125,7 +132,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createTask(Task task) {
-        if (task != null && ManagerUtils.validateTime(task, prioritizedTasks)) {
+        if (task != null) {
+            ManagerUtils.validateTime(task, prioritizedTasks);
             prioritizedTasks.add(task);
             tasks.put(task.getId(), task);
         }
@@ -133,8 +141,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createSubtask(Subtask subtask) {
-        if (subtask != null && ManagerUtils.validateTime(subtask, prioritizedTasks)) {
-            prioritizedTasks.add(subtask);
+        if (subtask != null) {
             Epic oldEpic = getEpicById(subtask.getEpicId());
             createSubtaskWorker(oldEpic, subtask);
         }
@@ -142,6 +149,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     protected void createSubtaskWorker(Epic oldEpic, Subtask subtask) {
         if (oldEpic != null) {
+            ManagerUtils.validateTime(subtask, prioritizedTasks);
+            prioritizedTasks.add(subtask);
             subtasks.put(subtask.getId(), subtask);
             Set<Subtask> newSubtasks = new HashSet<>(getEpicSubtasks(oldEpic));
             newSubtasks.add(subtask);
@@ -159,7 +168,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
-        if (task != null && ManagerUtils.validateTime(task, prioritizedTasks)) {
+        if (task != null) {
+            ManagerUtils.validateTime(task, prioritizedTasks);
             Task oldTask = tasks.get(task.getId());
             if (oldTask != null) {
                 prioritizedTasks.remove(oldTask);
@@ -171,7 +181,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateSubtask(Subtask subtask) {
-        if (subtask != null && ManagerUtils.validateTime(subtask, prioritizedTasks)) {
+        if (subtask != null) {
+            ManagerUtils.validateTime(subtask, prioritizedTasks);
             Subtask oldSubtask = getSubtaskById(subtask.getId());
             if (oldSubtask != null) {
                 deleteSubtaskById(oldSubtask.getId());
@@ -237,5 +248,14 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> history() {
         return historyManager.getHistory();
+    }
+
+    public static void main(String[] args) {
+        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        Task task = new Task("qwerty", "qwert", Status.NEW, 1, Duration.ofMinutes(60), LocalDateTime.of(2022, 12, 22, 13, 0));
+        Task task2 = new Task("qwerty123", "qwert123", Status.NEW, 2, Duration.ofMinutes(20), LocalDateTime.of(2022, 12, 22, 13, 30));
+        taskManager.createTask(task);
+        taskManager.createTask(task2);
+        System.out.println(taskManager.getPrioritizedTasksList());
     }
 }
