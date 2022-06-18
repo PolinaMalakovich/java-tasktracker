@@ -20,15 +20,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Set;
 
+import static ru.yandex.malakovich.tasktracker.HttpStatus.CREATED;
+import static ru.yandex.malakovich.tasktracker.HttpStatus.NO_CONTENT;
+import static ru.yandex.malakovich.tasktracker.HttpStatus.OK;
+
 public class HttpTaskServer {
     public static final int PORT = 8080;
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     public static final int RESPONSE_LENGTH = 0;
-    public static final int OK = 200;
-    public static final int CREATED = 201;
-    public static final int NO_CONTENT = 204;
-    public static final int BAD_REQUEST = 400;
-    public static final int NOT_FOUND = 404;
     private final HttpServer server;
     private final Gson gson;
     private final TaskManager taskManager;
