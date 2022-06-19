@@ -134,7 +134,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
-    private void save() {
+    protected void save() {
         Path path = file.toPath();
         if (Files.isWritable(path)) {
 
