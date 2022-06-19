@@ -13,49 +13,61 @@ public class KVTaskClient {
     private final String host;
     private final String apiToken;
 
-    public KVTaskClient(String url) throws IOException, InterruptedException {
+    public KVTaskClient(String url) {
         httpClient = HttpClient.newHttpClient();
         this.host = url;
         apiToken = register(httpClient, host);
     }
 
-    public void put(String key, String json) throws IOException, InterruptedException {
+    public void put(String key, String json) {
         URI uri = URI.create(host + "/save/" + key + "?API_TOKEN=" + apiToken);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        if (response.statusCode() != OK) {
-            throw new RuntimeException("Не удалось сохранить значение");
+        try {
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() != OK) {
+                throw new RuntimeException("Не удалось сохранить значение");
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public String load(String key) throws IOException, InterruptedException {
+    public String load(String key) {
         URI uri = URI.create(host + "/load/" + key + "?API_TOKEN=" + apiToken);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .GET()
                 .build();
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        if (response.statusCode() == OK) {
-            return response.body();
-        } else {
-            throw new RuntimeException("Не удалось получить значение от сервера");
+        try {
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == OK) {
+                return response.body();
+            } else {
+                throw new RuntimeException("Не удалось получить значение от сервера");
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    private static String register(HttpClient httpClient, String host) throws IOException, InterruptedException {
+    private static String register(HttpClient httpClient, String host) {
         URI uri = URI.create(host + "/register");
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .GET()
                 .build();
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        if (response.statusCode() == OK) {
-            return response.body();
-        } else {
-            throw new RuntimeException("Не удалось получить apiToken от сервера");
+        try {
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == OK) {
+                return response.body();
+            } else {
+                throw new RuntimeException("Не удалось получить apiToken от сервера");
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 }
