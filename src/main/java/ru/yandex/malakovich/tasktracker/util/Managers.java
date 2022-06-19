@@ -1,8 +1,8 @@
 package ru.yandex.malakovich.tasktracker.util;
 
+import ru.yandex.malakovich.tasktracker.HttpTaskManager;
 import ru.yandex.malakovich.tasktracker.manager.HistoryManager;
 import ru.yandex.malakovich.tasktracker.manager.InMemoryHistoryManager;
-import ru.yandex.malakovich.tasktracker.manager.InMemoryTaskManager;
 import ru.yandex.malakovich.tasktracker.manager.TaskManager;
 
 public class Managers {
@@ -10,7 +10,7 @@ public class Managers {
     }
 
     public static TaskManager getDefault() {
-        return new InMemoryTaskManager();
+        return new HttpTaskManager("http://localhost8080");
     }
 
     public static HistoryManager getDefaultHistory() {
