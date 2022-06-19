@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.malakovich.tasktracker.manager.InMemoryTaskManager;
 import ru.yandex.malakovich.tasktracker.manager.TaskManager;
-import ru.yandex.malakovich.tasktracker.util.Managers;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -18,7 +17,7 @@ class EpicTest {
 
     @BeforeEach
     void beforeEach() {
-        manager = Managers.getDefault();
+        manager = new InMemoryTaskManager();
         epic = Epic.create("epic title",
                 "epic description",
                 new HashSet<>(),

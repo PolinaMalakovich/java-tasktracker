@@ -1,8 +1,8 @@
-package ru.yandex.malakovich.tasktracker;
+package ru.yandex.malakovich.tasktracker.manager;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import ru.yandex.malakovich.tasktracker.manager.FileBackedTaskManager;
+import ru.yandex.malakovich.tasktracker.KVTaskClient;
 import ru.yandex.malakovich.tasktracker.model.Epic;
 import ru.yandex.malakovich.tasktracker.model.Subtask;
 import ru.yandex.malakovich.tasktracker.model.Task;
