@@ -24,6 +24,7 @@ import static ru.yandex.malakovich.tasktracker.HttpStatus.CREATED;
 import static ru.yandex.malakovich.tasktracker.HttpStatus.NO_CONTENT;
 import static ru.yandex.malakovich.tasktracker.HttpStatus.OK;
 import static ru.yandex.malakovich.tasktracker.HttpStatus.BAD_REQUEST;
+import static ru.yandex.malakovich.tasktracker.HttpStatus.METHOD_NOT_ALLOWED;
 
 public class HttpTaskServer {
     public static final int PORT = 8080;
@@ -104,6 +105,9 @@ public class HttpTaskServer {
                     httpExchange.sendResponseHeaders(NO_CONTENT, RESPONSE_LENGTH);
 
                     break;
+
+                default:
+                    httpExchange.sendResponseHeaders(METHOD_NOT_ALLOWED, RESPONSE_LENGTH);
             }
         }
     }
@@ -168,6 +172,7 @@ public class HttpTaskServer {
                     break;
 
                 default:
+                    httpExchange.sendResponseHeaders(METHOD_NOT_ALLOWED, RESPONSE_LENGTH);
             }
         }
     }
@@ -232,6 +237,7 @@ public class HttpTaskServer {
                     break;
 
                 default:
+                    httpExchange.sendResponseHeaders(METHOD_NOT_ALLOWED, RESPONSE_LENGTH);
             }
         }
     }
