@@ -29,25 +29,31 @@ public class HttpTaskServer {
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     public static final int RESPONSE_LENGTH = 0;
     private final HttpServer server;
-    private final Gson gson;
-    private final TaskManager taskManager;
 
     public HttpTaskServer() throws IOException {
-        taskManager = Managers.getDefault();
-        gson = new Gson();
+        TaskManager taskManager = Managers.getDefault();
+        Gson gson = new Gson();
 
         server = HttpServer.create(new InetSocketAddress(PORT), 0);
-        server.createContext("/tasks/task", new TasksHandler());
-        server.createContext("/tasks/subtask", new SubtasksHandler());
-        server.createContext("/tasks/epic", new EpicsHandler());
-        server.createContext("/tasks/subtask/epic", new EpicSubtasksHandler());
-        server.createContext("/tasks/history", new TaskHistoryHandler());
-        server.createContext("/tasks", new PrioritizedTasksHandler());
+        server.createContext("/tasks/task", new TasksHandler(taskManager, gson));
+        server.createContext("/tasks/subtask", new SubtasksHandler(taskManager, gson));
+        server.createContext("/tasks/epic", new EpicsHandler(taskManager, gson));
+        server.createContext("/tasks/subtask/epic", new EpicSubtasksHandler(taskManager, gson));
+        server.createContext("/tasks/history", new TaskHistoryHandler(taskManager, gson));
+        server.createContext("/tasks", new PrioritizedTasksHandler(taskManager, gson));
 
         server.start();
     }
 
-    class TasksHandler implements HttpHandler {
+    private static class TasksHandler implements HttpHandler {
+        private final TaskManager taskManager;
+        private final Gson gson;
+
+        public TasksHandler(TaskManager taskManager, Gson gson) {
+            this.taskManager = taskManager;
+            this.gson = gson;
+        }
+
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
             String method = httpExchange.getRequestMethod();
@@ -101,7 +107,15 @@ public class HttpTaskServer {
         }
     }
 
-    class SubtasksHandler implements HttpHandler {
+    private static class SubtasksHandler implements HttpHandler {
+        private final TaskManager taskManager;
+        private final Gson gson;
+
+        public SubtasksHandler(TaskManager taskManager, Gson gson) {
+            this.taskManager = taskManager;
+            this.gson = gson;
+        }
+
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
             String method = httpExchange.getRequestMethod();
@@ -157,7 +171,15 @@ public class HttpTaskServer {
         }
     }
 
-    class EpicsHandler implements HttpHandler {
+    private static class EpicsHandler implements HttpHandler {
+        private final TaskManager taskManager;
+        private final Gson gson;
+
+        public EpicsHandler(TaskManager taskManager, Gson gson) {
+            this.taskManager = taskManager;
+            this.gson = gson;
+        }
+
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
             String method = httpExchange.getRequestMethod();
@@ -213,7 +235,15 @@ public class HttpTaskServer {
         }
     }
 
-    class EpicSubtasksHandler implements HttpHandler {
+    private static class EpicSubtasksHandler implements HttpHandler {
+        private final TaskManager taskManager;
+        private final Gson gson;
+
+        public EpicSubtasksHandler(TaskManager taskManager, Gson gson) {
+            this.taskManager = taskManager;
+            this.gson = gson;
+        }
+
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
             URI requestURI = httpExchange.getRequestURI();
@@ -232,7 +262,15 @@ public class HttpTaskServer {
         }
     }
 
-    class TaskHistoryHandler implements HttpHandler {
+    private static class TaskHistoryHandler implements HttpHandler {
+        private final TaskManager taskManager;
+        private final Gson gson;
+
+        public TaskHistoryHandler(TaskManager taskManager, Gson gson) {
+            this.taskManager = taskManager;
+            this.gson = gson;
+        }
+
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
             List<Task> history = taskManager.history();
@@ -246,7 +284,15 @@ public class HttpTaskServer {
         }
     }
 
-    class PrioritizedTasksHandler implements HttpHandler {
+    private static class PrioritizedTasksHandler implements HttpHandler {
+        private final TaskManager taskManager;
+        private final Gson gson;
+
+        public PrioritizedTasksHandler(TaskManager taskManager, Gson gson) {
+            this.taskManager = taskManager;
+            this.gson = gson;
+        }
+
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
             List<Task> prioritizedTasks = taskManager.getPrioritizedTasksList();
