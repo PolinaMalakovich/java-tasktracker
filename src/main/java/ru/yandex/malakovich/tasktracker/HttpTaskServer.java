@@ -23,6 +23,7 @@ import java.util.Set;
 import static ru.yandex.malakovich.tasktracker.HttpStatus.CREATED;
 import static ru.yandex.malakovich.tasktracker.HttpStatus.NO_CONTENT;
 import static ru.yandex.malakovich.tasktracker.HttpStatus.OK;
+import static ru.yandex.malakovich.tasktracker.HttpStatus.BAD_REQUEST;
 
 public class HttpTaskServer {
     public static final int PORT = 8080;
@@ -78,8 +79,11 @@ public class HttpTaskServer {
                     break;
 
                 case "POST":
-                    InputStream inputStream = httpExchange.getRequestBody();
-                    String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
+                    String body = readText(httpExchange);
+                    if (body.isEmpty()) {
+                        httpExchange.sendResponseHeaders(BAD_REQUEST, RESPONSE_LENGTH);
+                        return;
+                    }
                     Task task = gson.fromJson(body, Task.class);
                     taskManager.createTask(task);
 
@@ -136,8 +140,11 @@ public class HttpTaskServer {
                     break;
 
                 case "POST":
-                    InputStream inputStream = httpExchange.getRequestBody();
-                    String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
+                    String body = readText(httpExchange);
+                    if (body.isEmpty()) {
+                        httpExchange.sendResponseHeaders(BAD_REQUEST, RESPONSE_LENGTH);
+                        return;
+                    }
                     Subtask subtask = gson.fromJson(body, Subtask.class);
                     taskManager.createSubtask(subtask);
 
@@ -196,8 +203,11 @@ public class HttpTaskServer {
                     break;
 
                 case "POST":
-                    InputStream inputStream = httpExchange.getRequestBody();
-                    String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
+                    String body = readText(httpExchange);
+                    if (body.isEmpty()) {
+                        httpExchange.sendResponseHeaders(BAD_REQUEST, RESPONSE_LENGTH);
+                        return;
+                    }
                     Epic epic = gson.fromJson(body, Epic.class);
                     taskManager.createTask(epic);
 
@@ -291,5 +301,9 @@ public class HttpTaskServer {
         httpExchange.getResponseHeaders().add("Content-Type", "application/json");
         httpExchange.sendResponseHeaders(OK, response.length);
         httpExchange.getResponseBody().write(response);
+    }
+
+    private static String readText(HttpExchange httpExchange) throws IOException {
+        return new String(httpExchange.getRequestBody().readAllBytes(), DEFAULT_CHARSET);
     }
 }
