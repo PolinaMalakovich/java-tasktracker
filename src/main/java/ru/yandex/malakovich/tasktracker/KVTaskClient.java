@@ -53,7 +53,7 @@ public class KVTaskClient {
         }
     }
 
-    private static String register(HttpClient httpClient, String host) {
+    private String register(HttpClient httpClient, String host) {
         URI uri = URI.create(host + "/register");
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
