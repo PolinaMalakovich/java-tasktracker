@@ -253,15 +253,19 @@ public class HttpTaskServer {
 
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
-            URI requestURI = httpExchange.getRequestURI();
-            String query = requestURI.getQuery();
-            String[] queryElements = query.split("=");
-            int id = Integer.parseInt(queryElements[1]);
-            Epic epic = taskManager.getEpicById(id);
-            Set<Subtask> subtasks = taskManager.getEpicSubtasks(epic);
-            String response = gson.toJson(subtasks);
-
-            sendText(httpExchange, response, OK);
+            String method = httpExchange.getRequestMethod();
+            if (method.equals("GET")) {
+                URI requestURI = httpExchange.getRequestURI();
+                String query = requestURI.getQuery();
+                String[] queryElements = query.split("=");
+                int id = Integer.parseInt(queryElements[1]);
+                Epic epic = taskManager.getEpicById(id);
+                Set<Subtask> subtasks = taskManager.getEpicSubtasks(epic);
+                String response = gson.toJson(subtasks);
+                sendText(httpExchange, response, OK);
+            } else {
+                httpExchange.sendResponseHeaders(METHOD_NOT_ALLOWED, RESPONSE_LENGTH);
+            }
         }
     }
 
@@ -276,10 +280,14 @@ public class HttpTaskServer {
 
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
-            List<Task> history = taskManager.history();
-            String response = gson.toJson(history);
-
-            sendText(httpExchange, response, OK);
+            String method = httpExchange.getRequestMethod();
+            if (method.equals("GET")) {
+                List<Task> history = taskManager.history();
+                String response = gson.toJson(history);
+                sendText(httpExchange, response, OK);
+            } else {
+                httpExchange.sendResponseHeaders(METHOD_NOT_ALLOWED, RESPONSE_LENGTH);
+            }
         }
     }
 
@@ -294,10 +302,14 @@ public class HttpTaskServer {
 
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
-            List<Task> prioritizedTasks = taskManager.getPrioritizedTasksList();
-            String response = gson.toJson(prioritizedTasks);
-
-            sendText(httpExchange, response, OK);
+            String method = httpExchange.getRequestMethod();
+            if (method.equals("GET")) {
+                List<Task> prioritizedTasks = taskManager.getPrioritizedTasksList();
+                String response = gson.toJson(prioritizedTasks);
+                sendText(httpExchange, response, OK);
+            } else {
+                httpExchange.sendResponseHeaders(METHOD_NOT_ALLOWED, RESPONSE_LENGTH);
+            }
         }
     }
 
