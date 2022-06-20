@@ -12,6 +12,7 @@ import java.util.List;
 
 public class HttpTaskManager extends FileBackedTaskManager {
     private final KVTaskClient kvClient;
+    private final Gson gson = new Gson();
 
     public HttpTaskManager(String host) {
         this(host, false);
@@ -23,12 +24,12 @@ public class HttpTaskManager extends FileBackedTaskManager {
         if (needLoad) load();
     }
 
+    // TODO: 20.06.2022 добавить в HttpTaskManager обработку prioritizedTasks
     public void load() {
         String tasksList = kvClient.load("tasks");
         String subtasksList = kvClient.load("subtasks");
         String epicsList = kvClient.load("epics");
         String historyList = kvClient.load("history");
-        Gson gson = new Gson();
         List<Task> tasks = gson.fromJson(tasksList, new TypeToken<ArrayList<Task>>(){}.getType());
         List<Subtask> subtasks = gson.fromJson(subtasksList, new TypeToken<ArrayList<Subtask>>(){}.getType());
         List<Epic> epics = gson.fromJson(epicsList, new TypeToken<ArrayList<Epic>>(){}.getType());
@@ -46,7 +47,6 @@ public class HttpTaskManager extends FileBackedTaskManager {
         List<Subtask> subtasks = getSubtasks();
         List<Epic> epics = getEpics();
         List<Task> history = history();
-        Gson gson = new Gson();
         String tasksList = gson.toJson(tasks);
         String subtasksList = gson.toJson(subtasks);
         String epicsList = gson.toJson(epics);
