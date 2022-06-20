@@ -73,11 +73,7 @@ public class HttpTaskServer {
                         response = gson.toJson(tasks);
                     }
 
-                    httpExchange.sendResponseHeaders(OK, RESPONSE_LENGTH);
-
-                    try (OutputStream os = httpExchange.getResponseBody()) {
-                        os.write(response.getBytes());
-                    }
+                    sendText(httpExchange, response);
 
                     break;
 
@@ -135,11 +131,7 @@ public class HttpTaskServer {
                         response = gson.toJson(subtasks);
                     }
 
-                    httpExchange.sendResponseHeaders(OK, RESPONSE_LENGTH);
-
-                    try (OutputStream os = httpExchange.getResponseBody()) {
-                        os.write(response.getBytes());
-                    }
+                    sendText(httpExchange, response);
 
                     break;
 
@@ -199,11 +191,7 @@ public class HttpTaskServer {
                         response = gson.toJson(epics);
                     }
 
-                    httpExchange.sendResponseHeaders(OK, RESPONSE_LENGTH);
-
-                    try (OutputStream os = httpExchange.getResponseBody()) {
-                        os.write(response.getBytes());
-                    }
+                    sendText(httpExchange, response);
 
                     break;
 
@@ -254,11 +242,7 @@ public class HttpTaskServer {
             Set<Subtask> subtasks = taskManager.getEpicSubtasks(epic);
             String response = gson.toJson(subtasks);
 
-            httpExchange.sendResponseHeaders(OK, RESPONSE_LENGTH);
-
-            try (OutputStream os = httpExchange.getResponseBody()) {
-                os.write(response.getBytes());
-            }
+            sendText(httpExchange, response);
         }
     }
 
@@ -276,11 +260,7 @@ public class HttpTaskServer {
             List<Task> history = taskManager.history();
             String response = gson.toJson(history);
 
-            httpExchange.sendResponseHeaders(OK, RESPONSE_LENGTH);
-
-            try (OutputStream os = httpExchange.getResponseBody()) {
-                os.write(response.getBytes());
-            }
+            sendText(httpExchange, response);
         }
     }
 
@@ -298,15 +278,18 @@ public class HttpTaskServer {
             List<Task> prioritizedTasks = taskManager.getPrioritizedTasksList();
             String response = gson.toJson(prioritizedTasks);
 
-            httpExchange.sendResponseHeaders(OK, RESPONSE_LENGTH);
-
-            try (OutputStream os = httpExchange.getResponseBody()) {
-                os.write(response.getBytes());
-            }
+            sendText(httpExchange, response);
         }
     }
 
     public void stop() {
         server.stop(0);
+    }
+
+    private static void sendText(HttpExchange httpExchange, String text) throws IOException {
+        byte[] response = text.getBytes(DEFAULT_CHARSET);
+        httpExchange.getResponseHeaders().add("Content-Type", "application/json");
+        httpExchange.sendResponseHeaders(OK, response.length);
+        httpExchange.getResponseBody().write(response);
     }
 }
