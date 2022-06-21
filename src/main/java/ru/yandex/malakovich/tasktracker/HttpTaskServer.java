@@ -85,8 +85,7 @@ public class HttpTaskServer {
                         httpExchange.sendResponseHeaders(BAD_REQUEST, RESPONSE_LENGTH);
                         return;
                     }
-                    Task task = gson.fromJson(body, Task.class);
-                    taskManager.createTask(task);
+                    Task task = taskManager.createTask(gson.fromJson(body, Task.class));
                     response = gson.toJson(task);
 
                     sendText(httpExchange, response, CREATED);
@@ -150,8 +149,7 @@ public class HttpTaskServer {
                         httpExchange.sendResponseHeaders(BAD_REQUEST, RESPONSE_LENGTH);
                         return;
                     }
-                    Subtask subtask = gson.fromJson(body, Subtask.class);
-                    taskManager.createSubtask(subtask);
+                    Subtask subtask = taskManager.createSubtask(gson.fromJson(body, Subtask.class));
                     response = gson.toJson(subtask);
 
                     sendText(httpExchange, response, CREATED);
@@ -216,7 +214,7 @@ public class HttpTaskServer {
                         return;
                     }
                     Epic epic = gson.fromJson(body, Epic.class);
-                    taskManager.createTask(epic);
+                    taskManager.createEpic(epic);
                     response = gson.toJson(epic);
 
                     sendText(httpExchange, response, CREATED);

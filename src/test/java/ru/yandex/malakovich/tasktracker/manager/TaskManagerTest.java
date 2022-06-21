@@ -179,10 +179,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void updateEpic() {
         Epic oldEpic = createTestEpicAndAddToManager("one");
-        Epic epic = Epic.create(oldEpic.getTitle(),
-                "new epic description",
-                taskManager.getEpicSubtasks(oldEpic),
-                oldEpic.getId());
+        Epic epic = Epic.create(oldEpic.getId(), "new epic description", taskManager.getEpicSubtasks(oldEpic), oldEpic.getTitle()
+        );
         taskManager.updateEpic(epic);
 
         assertEquals(epic, taskManager.getEpicById(epic.getId()));
@@ -196,10 +194,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void updateTask() {
         Task oldTask = createTestTaskAndAddToManager("one");
-        Task task = new Task(oldTask.getTitle(),
-                "new task description",
-                oldTask.getStatus(),
-                oldTask.getId(),
+        Task task = new Task(oldTask.getId(), "new task description", oldTask.getStatus(), oldTask.getTitle(),
                 oldTask.getDuration(),
                 oldTask.getStartTime());
         taskManager.updateTask(task);
@@ -216,11 +211,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void updateSubtask() {
         Epic oldEpic = createTestEpicAndAddToManager("one");
         Subtask oldSubtask = createTestSubtaskAndAddToManager("one", oldEpic.getId());
-        Subtask subtask = new Subtask(oldSubtask.getTitle(),
-                "new subtask description",
-                oldSubtask.getStatus(),
-                oldSubtask.getEpicId(),
-                oldSubtask.getId(),
+        Subtask subtask = new Subtask(oldSubtask.getId(), "new subtask description", oldSubtask.getStatus(), oldSubtask.getEpicId(), oldSubtask.getTitle(),
                 oldSubtask.getDuration(),
                 oldSubtask.getStartTime());
         taskManager.updateSubtask(subtask);
@@ -318,9 +309,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void validateTimeWithNull() {
-        Task task = new Task("task title",
-                "task description",
-                InMemoryTaskManager.getId(),
+        Task task = new Task(null, "task description", "task title",
                 Duration.ZERO,
                 null);
 
@@ -328,20 +317,14 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     protected Epic createTestEpicAndAddToManager(String number) {
-        Epic epic = TestUtils.createTestEpic(number);
-        taskManager.createEpic(epic);
-        return epic;
+        return taskManager.createEpic(TestUtils.createTestEpic(number));
     }
 
     protected Task createTestTaskAndAddToManager(String number) {
-        Task task = TestUtils.createTestTask(number);
-        taskManager.createTask(task);
-        return task;
+        return taskManager.createTask(TestUtils.createTestTask(number));
     }
 
     protected Subtask createTestSubtaskAndAddToManager(String number, int epicId) {
-        Subtask subtask = TestUtils.createTestSubtask(number, epicId);
-        taskManager.createSubtask(subtask);
-        return subtask;
+        return taskManager.createSubtask(TestUtils.createTestSubtask(number, epicId));
     }
 }

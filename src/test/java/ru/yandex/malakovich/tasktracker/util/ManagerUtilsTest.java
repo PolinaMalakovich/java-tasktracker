@@ -5,7 +5,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import ru.yandex.malakovich.tasktracker.exception.InvalidStartTimeException;
-import ru.yandex.malakovich.tasktracker.manager.InMemoryTaskManager;
 import ru.yandex.malakovich.tasktracker.model.Task;
 
 import java.time.Duration;
@@ -46,7 +45,7 @@ public class ManagerUtilsTest {
         LocalDateTime startTime = LocalDateTime.of(2022, Month.JUNE, 7, 12, 50);
         Duration duration = Duration.of(1, ChronoUnit.DAYS);
         LocalDateTime endTime = startTime.plusDays(duration.toDays());
-        Task task = new Task("title", "description", 1, duration, startTime);
+        Task task = new Task(1, "description", "title", duration, startTime);
         return Stream.of(
                 // @formatter:off
                 Arguments.of(null                    , null                   , task, true ),
@@ -83,7 +82,7 @@ public class ManagerUtilsTest {
     }
 
     private static Task task(LocalDateTime startTime, Duration duration) {
-        return new Task("title", "description", id++, duration, startTime);
+        return new Task(id++, "description", "title", duration, startTime);
     }
 
     private static LocalDateTime at(int hours, int minutes) {

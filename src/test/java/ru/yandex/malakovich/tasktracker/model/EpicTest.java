@@ -18,11 +18,7 @@ class EpicTest {
     @BeforeEach
     void beforeEach() {
         manager = new InMemoryTaskManager();
-        epic = Epic.create("epic title",
-                "epic description",
-                new HashSet<>(),
-                InMemoryTaskManager.getId());
-        manager.createEpic(epic);
+        epic = manager.createEpic(Epic.create("epic description", new HashSet<>(), "epic title"));
     }
 
     @Test
@@ -63,11 +59,10 @@ class EpicTest {
     }
 
     private void createTestSubtask(Status status, String number, Duration duration, LocalDateTime startTime) {
-        Subtask subtask = new Subtask("subtask title " + number,
+        Subtask subtask = new Subtask(null,
                 "subtask description " + number,
-                status,
-                epic.getId(),
-                InMemoryTaskManager.getId(),
+                status, epic.getId(),
+                "subtask title " + number,
                 duration,
                 startTime);
         manager.createSubtask(subtask);

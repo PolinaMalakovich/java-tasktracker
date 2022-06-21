@@ -11,14 +11,10 @@ import java.util.Set;
 public class Epic extends Task {
     private final Set<Integer> subtasks;
 
-    private Epic(String title,
-                 String description,
-                 Status status,
-                 Set<Integer> subtasks,
-                 int id,
+    private Epic(Integer id, String description, Status status, Set<Integer> subtasks, String title,
                  Duration duration,
                  LocalDateTime startTime) {
-        super(title, description, status, id, duration, startTime);
+        super(id, description, status, title, duration, startTime);
         this.subtasks = subtasks;
     }
 
@@ -29,6 +25,10 @@ public class Epic extends Task {
     @Override
     public Type getType() {
         return Type.EPIC;
+    }
+
+    public Epic withId(Integer id) {
+        return new Epic(id, getDescription(), getStatus(), getSubtasks(), getTitle(), getDuration(), getStartTime());
     }
 
     @Override
@@ -53,7 +53,7 @@ public class Epic extends Task {
                 "}";
     }
 
-    public static Epic create(String title, String description, Set<Subtask> subtasks, int id) {
+    public static Epic create(Integer id, String description, Set<Subtask> subtasks, String title) {
         Objects.requireNonNull(title);
         Objects.requireNonNull(description);
         Objects.requireNonNull(subtasks);
@@ -67,7 +67,11 @@ public class Epic extends Task {
             subtasksIds.add(s.getId());
         }
 
-        return new Epic(title, description, status, subtasksIds, id, duration, startTime);
+        return new Epic(id, description, status, subtasksIds, title, duration, startTime);
+    }
+
+    public static Epic create(String description, Set<Subtask> subtasks, String title) {
+        return create(null, description, subtasks, title);
     }
 
     private static Status getStatus(Set<Subtask> subtasks) {

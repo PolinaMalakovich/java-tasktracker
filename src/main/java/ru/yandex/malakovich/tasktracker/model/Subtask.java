@@ -5,14 +5,29 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Subtask extends Task {
-    private final int epicId;
+    private final Integer epicId;
 
-    public Subtask(String title, String description, Status status, int epicId, int id, Duration duration, LocalDateTime startTime) {
-        super(title, description, status, id, duration, startTime);
+    public Subtask(Integer id,
+                   String description,
+                   Status status,
+                   Integer epicId,
+                   String title,
+                   Duration duration,
+                   LocalDateTime startTime) {
+        super(id, description, status, title, duration, startTime);
         this.epicId = epicId;
     }
 
-    public int getEpicId() {
+    public Subtask(String description,
+                   Status status,
+                   Integer epicId,
+                   String title,
+                   Duration duration,
+                   LocalDateTime startTime) {
+        this(null, description, status, epicId, title, duration, startTime);
+    }
+
+    public Integer getEpicId() {
         return epicId;
     }
 
@@ -21,13 +36,17 @@ public class Subtask extends Task {
         return Type.SUBTASK;
     }
 
+    public Subtask withId(Integer id) {
+        return new Subtask(id, getDescription(), getStatus(), epicId, getTitle(), getDuration(), getStartTime());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Subtask subtask = (Subtask) o;
-        return epicId == subtask.epicId;
+        return Objects.equals(epicId, subtask.epicId);
     }
 
     @Override

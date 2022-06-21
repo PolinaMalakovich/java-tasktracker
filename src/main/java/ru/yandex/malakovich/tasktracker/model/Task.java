@@ -8,11 +8,11 @@ public class Task {
     private final String title;
     private final String description;
     private final Status status;
-    private final int id;
+    private final Integer id;
     private final Duration duration;
     private final LocalDateTime startTime;
 
-    public Task(String title, String description, Status status, int id, Duration duration, LocalDateTime startTime) {
+    public Task(Integer id, String description, Status status, String title, Duration duration, LocalDateTime startTime) {
         this.title = title;
         this.description = description;
         this.status = status;
@@ -21,8 +21,12 @@ public class Task {
         this.startTime = startTime;
     }
 
-    public Task(String title, String description, int id, Duration duration, LocalDateTime startTime) {
-        this(title, description, Status.NEW, id, duration, startTime);
+    public Task(Integer id, String description, String title, Duration duration, LocalDateTime startTime) {
+        this(id, description, Status.NEW, title, duration, startTime);
+    }
+
+    public Task(String description, String title, Duration duration, LocalDateTime startTime) {
+        this(null, description, Status.NEW, title, duration, startTime);
     }
 
     public String getTitle() {
@@ -37,7 +41,7 @@ public class Task {
         return status;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -57,12 +61,16 @@ public class Task {
         return startTime == null || duration == null ? null : startTime.plusMinutes(duration.toMinutes());
     }
 
+    public Task withId(Integer id) {
+        return new Task(id, description, status, title, duration, startTime);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return getId() == task.getId()
+        return Objects.equals(getId(), task.getId())
                 && Objects.equals(getTitle(), task.getTitle())
                 && Objects.equals(getDescription(), task.getDescription())
                 && getStatus() == task.getStatus();

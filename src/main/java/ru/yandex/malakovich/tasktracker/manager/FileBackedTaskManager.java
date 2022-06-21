@@ -78,24 +78,29 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void createEpic(Epic epic) {
-        super.createEpic(epic);
+    public Epic createEpic(Epic epic) {
+        Epic newEpic = super.createEpic(epic);
         save();
+        return newEpic;
     }
 
     @Override
-    public void createTask(Task task) {
-        super.createTask(task);
+    public Task createTask(Task task) {
+        Task newTask = super.createTask(task);
         save();
+        return newTask;
     }
 
     @Override
-    public void createSubtask(Subtask subtask) {
+    public Subtask createSubtask(Subtask subtask) {
+        Subtask newSubtask = null;
         if (subtask != null && epics.containsKey(subtask.getEpicId())) {
             Epic epic = epics.get(subtask.getEpicId());
-            super.createSubtaskWorker(epic, subtask);
+            newSubtask = super.createSubtaskWorker(epic, subtask);
             save();
         }
+
+        return newSubtask;
     }
 
     @Override
@@ -292,13 +297,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
             switch (type) {
                 case SUBTASK:
-                    task = new Subtask(title, description, status, Integer.parseInt(values[7]), id, duration, startTime);
+                    task = new Subtask(id, description, status, Integer.parseInt(values[7]), title, duration, startTime);
                     break;
                 case EPIC:
-                    task = Epic.create(title, description, new HashSet<>(), id);
+                    task = Epic.create(id, description, new HashSet<>(), title);
                     break;
                 case TASK:
-                    task = new Task(title, description, status, id, duration, startTime);
+                    task = new Task(id, description, status, title, duration, startTime);
                     break;
                 default:
                     System.out.println("Unsupported task type: " + type);

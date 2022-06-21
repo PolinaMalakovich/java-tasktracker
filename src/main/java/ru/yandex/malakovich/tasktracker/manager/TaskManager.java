@@ -72,20 +72,23 @@ public interface TaskManager {
     /**
      * Associates the epic with its id in the epics map if the epic is not null.
      * @param epic an Epic object to be put into the epics map
+     * @return new Epic
      */
-    void createEpic(Epic epic);
+    Epic createEpic(Epic epic);
 
     /**
      * Associates the task with its id in the tasks map if the task is not null.
      * @param task a Task object to be put into the tasks map
+     * @return new Task
      */
-    void createTask(Task task);
+    Task createTask(Task task);
 
     /**
      * Associates the subtask with its id in the subtasks map if the subtask is not null.
      * @param subtask a Subtask object to be put into the subtasks map
+     * @return new Subtask
      */
-    void createSubtask(Subtask subtask);
+    Subtask createSubtask(Subtask subtask);
 
     /**
      * Replaces the epics map entry for the specified epic only if the epic is not null.
