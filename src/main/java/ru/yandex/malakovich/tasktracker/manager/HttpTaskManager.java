@@ -46,6 +46,8 @@ public class HttpTaskManager extends FileBackedTaskManager {
         List<Integer> history = gson.fromJson(historyList, new TypeToken<ArrayList<Integer>>(){}.getType());
         history.stream().map(all::get).forEach(this.historyManager::add);
 
+        all.keySet().stream().max(Integer::compare).ifPresent(this::setStartingId);
+
         tasks.forEach(task -> this.tasks.put(task.getId(), task));
         subtasks.forEach(subtask -> this.subtasks.put(subtask.getId(), subtask));
         epics.forEach(epic -> this.epics.put(epic.getId(), epic));

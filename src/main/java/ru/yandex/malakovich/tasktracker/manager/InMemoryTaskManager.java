@@ -50,6 +50,10 @@ public class InMemoryTaskManager implements TaskManager {
         return id++;
     }
 
+    protected void setStartingId(int id) {
+        this.id = id;
+    }
+
     @Override
     public void deleteAllEpics() {
         for (Epic epic : epics.values()) {
